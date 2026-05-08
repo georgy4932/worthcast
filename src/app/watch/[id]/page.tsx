@@ -1,27 +1,11 @@
 import Navbar from "@/components/Navbar";
 import MuxPlayer from "@/components/MuxPlayer";
+import { createClient } from "@supabase/supabase-js";
 
-// [DATA: replace with real video data from Supabase]
-const mockVideo = {
-  id: "silence-spiritual-practice",
-  title: "Why Silence Is the Most Powerful Spiritual Practice",
-  description:
-    "In this profound exploration, Rev. Marcus Cole takes us through the ancient tradition of contemplative silence — from the Desert Fathers to modern neuroscience. Discover why the most transformative spiritual discipline may be the one that requires doing nothing at all.",
-  category: "Faith",
-  duration: "18:42",
-  views: "1.2M",
-  publishedAt: "March 2026",
-  muxPlaybackId: "F004U1wgUs2Rihfo015IXb02UjBcGohLFWLpYJxWHAW7Yk" as string | null,
-  creator: {
-    name: "Rev. Marcus Cole",
-    username: "revmarcuscole",
-    avatar: "R",
-    avatarBg: "#C9A84C",
-    followers: "214K",
-    bio: "Pastor, theologian, and contemplative teacher.",
-  },
-  tags: ["Faith", "Spirituality", "Contemplation", "Prayer"],
-};
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const relatedVideos = [
   {
@@ -66,7 +50,61 @@ const relatedVideos = [
   },
 ];
 
-export default function WatchPage() {
+async function getVideo(id: string) {
+  // Try Supabase first by UUID
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!error && data) return data;
+
+  // Try by mux_playback_id
+  const { data: data2, error: error2 } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("mux_playback_id", id)
+    .single();
+
+  if (!error2 && data2) return data2;
+
+  return null;
+}
+
+function formatDuration(seconds: number | null) {
+  if (!seconds) return null;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+export default async function WatchPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const video = await getVideo(params.id);
+
+  // Fallback mock for slug-based URLs not in DB yet
+  const mockFallback = {
+    title: "WorthCast Video",
+    description: null,
+    mux_playback_id: null,
+    view_count: 0,
+    created_at: new Date().toISOString(),
+    duration: null,
+    category_id: null,
+  };
+
+  const v = video || mockFallback;
+  const playbackId = v.mux_playback_id;
+  const duration = formatDuration(v.duration);
+  const publishedAt = new Date(v.created_at).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <>
       <Navbar />
@@ -90,13 +128,12 @@ export default function WatchPage() {
           <div style={{ borderRight: "1px solid var(--border)" }}>
 
             {/* Video Player */}
-            {mockVideo.muxPlaybackId ? (
+            {playbackId ? (
               <MuxPlayer
-                playbackId={mockVideo.muxPlaybackId}
-                title={mockVideo.title}
+                playbackId={playbackId}
+                title={v.title}
               />
             ) : (
-              // Placeholder — shows until real video is uploaded
               <div
                 style={{
                   width: "100%",
@@ -122,56 +159,18 @@ export default function WatchPage() {
                     justifyContent: "center",
                   }}
                 >
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="var(--black)"
-                  >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--black)">
                     <polygon points="5 3 19 12 5 21 5 3" />
                   </svg>
                 </div>
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.4)",
-                    fontSize: "14px",
-                    fontFamily: "var(--font-body)",
-                  }}
-                >
-                  Upload a video to see it play here
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px" }}>
+                  Video not available yet
                 </p>
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: "16px",
-                    right: "16px",
-                    background: "rgba(0,0,0,0.8)",
-                    color: "#fff",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    padding: "4px 10px",
-                    borderRadius: "4px",
-                  }}
-                >
-                  {mockVideo.duration}
-                </span>
               </div>
             )}
 
             {/* Video Info */}
             <div style={{ padding: "32px 40px" }}>
-              <p
-                style={{
-                  fontSize: "11px",
-                  color: "var(--gold)",
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  fontWeight: 600,
-                  marginBottom: "12px",
-                }}
-              >
-                {mockVideo.category}
-              </p>
               <h1
                 style={{
                   fontFamily: "var(--font-serif)",
@@ -182,7 +181,7 @@ export default function WatchPage() {
                   fontWeight: 700,
                 }}
               >
-                {mockVideo.title}
+                {v.title}
               </h1>
 
               {/* Meta */}
@@ -197,115 +196,32 @@ export default function WatchPage() {
                   flexWrap: "wrap",
                 }}
               >
-                <span>{mockVideo.views} views</span>
+                <span>{v.view_count?.toLocaleString() || 0} views</span>
                 <span>·</span>
-                <span>{mockVideo.publishedAt}</span>
-                <span>·</span>
-                <span>{mockVideo.duration}</span>
-              </div>
-
-              {/* Creator */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "20px 0",
-                  borderTop: "1px solid var(--border)",
-                  borderBottom: "1px solid var(--border)",
-                  marginBottom: "28px",
-                  flexWrap: "wrap",
-                  gap: "16px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "14px",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: "48px",
-                      height: "48px",
-                      borderRadius: "50%",
-                      background: mockVideo.creator.avatarBg,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "18px",
-                      fontWeight: 700,
-                      color: "var(--black)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {mockVideo.creator.avatar}
-                  </span>
-                  <div>
-                    <p
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: 600,
-                        color: "var(--white)",
-                        marginBottom: "2px",
-                      }}
-                    >
-                      {mockVideo.creator.name}
-                    </p>
-                    <p style={{ fontSize: "13px", color: "var(--muted)" }}>
-                      {mockVideo.creator.followers} followers
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  style={{
-                    background: "var(--gold)",
-                    color: "var(--black)",
-                    border: "none",
-                    borderRadius: "100px",
-                    padding: "9px 24px",
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    fontFamily: "var(--font-body)",
-                    cursor: "pointer",
-                  }}
-                >
-                  + Follow
-                </button>
+                <span>{publishedAt}</span>
+                {duration && (
+                  <>
+                    <span>·</span>
+                    <span>{duration}</span>
+                  </>
+                )}
               </div>
 
               {/* Description */}
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "var(--muted)",
-                  lineHeight: 1.75,
-                  marginBottom: "28px",
-                }}
-              >
-                {mockVideo.description}
-              </p>
-
-              {/* Tags */}
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {mockVideo.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      background: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "100px",
-                      padding: "5px 14px",
-                      fontSize: "12px",
-                      color: "var(--muted)",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {v.description && (
+                <p
+                  style={{
+                    fontSize: "15px",
+                    color: "var(--muted)",
+                    lineHeight: 1.75,
+                    marginBottom: "28px",
+                    paddingTop: "20px",
+                    borderTop: "1px solid var(--border)",
+                  }}
+                >
+                  {v.description}
+                </p>
+              )}
             </div>
           </div>
 
@@ -323,12 +239,11 @@ export default function WatchPage() {
               Up Next
             </h2>
 
-            {/* [DATA: replace with real related videos from Supabase] */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {relatedVideos.map((video) => (
+              {relatedVideos.map((rv) => (
                 <a
-                  key={video.id}
-                  href={`/watch/${video.id}`}
+                  key={rv.id}
+                  href={`/watch/${rv.id}`}
                   style={{
                     display: "flex",
                     gap: "12px",
@@ -340,7 +255,7 @@ export default function WatchPage() {
                     style={{
                       width: "140px",
                       aspectRatio: "16/9",
-                      background: video.bg,
+                      background: rv.bg,
                       borderRadius: "6px",
                       display: "flex",
                       alignItems: "center",
@@ -350,7 +265,7 @@ export default function WatchPage() {
                       position: "relative",
                     }}
                   >
-                    {video.emoji}
+                    {rv.emoji}
                     <span
                       style={{
                         position: "absolute",
@@ -364,7 +279,7 @@ export default function WatchPage() {
                         borderRadius: "3px",
                       }}
                     >
-                      {video.duration}
+                      {rv.duration}
                     </span>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -378,7 +293,7 @@ export default function WatchPage() {
                         marginBottom: "4px",
                       }}
                     >
-                      {video.category}
+                      {rv.category}
                     </p>
                     <h3
                       style={{
@@ -393,10 +308,10 @@ export default function WatchPage() {
                         overflow: "hidden",
                       }}
                     >
-                      {video.title}
+                      {rv.title}
                     </h3>
                     <p style={{ fontSize: "12px", color: "var(--muted)" }}>
-                      {video.creator} · {video.views} views
+                      {rv.creator} · {rv.views} views
                     </p>
                   </div>
                 </a>
