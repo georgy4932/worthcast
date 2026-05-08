@@ -11,7 +11,7 @@ const mockVideo = {
   duration: "18:42",
   views: "1.2M",
   publishedAt: "March 2026",
-  muxPlaybackId: null as string | null, // replace with real Mux playback ID
+  muxPlaybackId: "F004U1wgUs2Rihfo015IXb02UjBcGohLFWLpYJxWHAW7Yk" as string | null,
   creator: {
     name: "Rev. Marcus Cole",
     username: "revmarcuscole",
