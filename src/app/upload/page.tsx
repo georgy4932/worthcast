@@ -39,7 +39,11 @@ export default function UploadPage() {
 
     try {
       // Step 1 — Get Mux upload URL
-      const res = await fetch("/api/mux/upload", { method: "POST" });
+      const res = await fetch("/api/mux/upload", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ title, description }),
+});
       const { uploadUrl, uploadId } = await res.json();
 
       if (!uploadUrl) throw new Error("Failed to get upload URL");
