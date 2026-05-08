@@ -14,7 +14,7 @@
     "react-dom": "^19.0.0",
     "@supabase/supabase-js": "^2.49.4",
     "@supabase/ssr": "^0.6.1",
-    "mux-node": "^9.0.0"
+    "@mux/mux-node": "^9.0.0"
   },
   "devDependencies": {
     "typescript": "^5",
