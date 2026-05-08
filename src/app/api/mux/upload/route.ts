@@ -6,13 +6,17 @@ const mux = new Mux({
   tokenSecret: process.env.MUX_TOKEN_SECRET!,
 });
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    const body = await request.json();
+    const { title, description, categoryId } = body;
+
     const upload = await mux.video.uploads.create({
       cors_origin: "*",
       new_asset_settings: {
         playback_policy: ["public"],
         encoding_tier: "baseline",
+        passthrough: JSON.stringify({ title, description, categoryId }),
       },
     });
 
