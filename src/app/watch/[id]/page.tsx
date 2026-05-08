@@ -82,9 +82,10 @@ function formatDuration(seconds: number | null) {
 export default async function WatchPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const video = await getVideo(params.id);
+  const { id } = await params;
+  const video = await getVideo(id);
 
   // Fallback mock for slug-based URLs not in DB yet
   const mockFallback = {
