@@ -8,9 +8,9 @@ const supabase = createClient(
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await context.params;
 
   const { data, error } = await supabase
     .from("videos")
@@ -24,4 +24,3 @@ export async function GET(
 
   return NextResponse.json(data);
 }
- 
