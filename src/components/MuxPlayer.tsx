@@ -1,14 +1,13 @@
 "use client";
 
-import MuxPlayerReact from "@mux/mux-player-react";
-
 type Props = {
   playbackId: string;
   title?: string;
-  accentColor?: string;
 };
 
-export default function MuxPlayer({ playbackId, title, accentColor = "#C9A84C" }: Props) {
+export default function MuxPlayer({ playbackId, title }: Props) {
+  const src = `https://stream.mux.com/${playbackId}.m3u8`;
+
   return (
     <div
       style={{
@@ -18,19 +17,21 @@ export default function MuxPlayer({ playbackId, title, accentColor = "#C9A84C" }
         position: "relative",
       }}
     >
-      <MuxPlayerReact
-        playbackId={playbackId}
-        metadata={{
-          video_title: title,
-          player_name: "WorthCast Player",
-        }}
-        accentColor={accentColor}
+      <video
+        controls
+        autoPlay={false}
+        playsInline
+        title={title}
         style={{
           width: "100%",
           height: "100%",
           display: "block",
+          accentColor: "#C9A84C",
         }}
-      />
+      >
+        <source src={src} type="application/x-mpegURL" />
+        Your browser does not support video playback.
+      </video>
     </div>
   );
 }
