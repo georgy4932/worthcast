@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="#080808"/>
+  <!-- Gold square -->
+  <rect x="4" y="4" width="24" height="24" rx="5" fill="#C9A84C"/>
+  <!-- Play triangle -->
+  <polygon points="12,9 12,23 24,16" fill="#080808"/>
+</svg>
