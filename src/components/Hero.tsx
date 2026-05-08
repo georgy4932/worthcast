@@ -1,7 +1,6 @@
- export default function Hero() {
+export default function Hero() {
   return (
-    <section
-      className="hero"
+    <main
       aria-labelledby="hero-heading"
       style={{
         minHeight: "100vh",
@@ -10,24 +9,20 @@
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        background: "var(--black)",
       }}
     >
-      {/* Background */}
       <div
         aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
-          background: `
-            radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 20% 80%, rgba(224,60,47,0.04) 0%, transparent 60%),
-            var(--black)
-          `,
+          background:
+            "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.06) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
 
-      {/* Grid */}
       <div
         style={{
           display: "grid",
@@ -46,39 +41,27 @@
             padding: "80px 60px 80px 80px",
           }}
         >
-          {/* Badge */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              background: "var(--gold-dim)",
-              border: "1px solid var(--gold-border)",
+              background: "rgba(201,168,76,0.14)",
+              border: "1px solid rgba(201,168,76,0.28)",
               padding: "6px 14px",
               borderRadius: "100px",
               fontSize: "12px",
               fontWeight: 500,
               color: "var(--gold)",
               letterSpacing: "1px",
-              textTransform: "uppercase",
+              textTransform: "uppercase" as const,
               marginBottom: "32px",
               width: "fit-content",
             }}
           >
-            <span
-              aria-hidden="true"
-              style={{
-                width: "6px",
-                height: "6px",
-                background: "var(--gold)",
-                borderRadius: "50%",
-                flexShrink: 0,
-              }}
-            />
             Values-Aligned Streaming
           </div>
 
-          {/* Heading */}
           <h1
             id="hero-heading"
             style={{
@@ -90,11 +73,13 @@
               marginBottom: "8px",
             }}
           >
-            STREAM<br />WHAT<br />
+            STREAM
+            <br />
+            WHAT
+            <br />
             <span style={{ color: "var(--gold)" }}>MATTERS.</span>
           </h1>
 
-          {/* Subtitle */}
           <p
             style={{
               fontFamily: "var(--font-serif)",
@@ -107,7 +92,6 @@
             Content worth your time. Creators worth following.
           </p>
 
-          {/* Description */}
           <p
             style={{
               fontSize: "16px",
@@ -121,13 +105,12 @@
             who believe the content you watch shapes the person you become.
           </p>
 
-          {/* CTAs */}
           <div
             style={{
               display: "flex",
               gap: "16px",
               alignItems: "center",
-              flexWrap: "wrap",
+              flexWrap: "wrap" as const,
             }}
           >
             <a
@@ -138,68 +121,36 @@
                 gap: "8px",
                 background: "var(--gold)",
                 color: "var(--black)",
-                border: "none",
                 padding: "14px 36px",
                 borderRadius: "6px",
                 fontSize: "15px",
                 fontWeight: 700,
-                fontFamily: "var(--font-body)",
                 textDecoration: "none",
-                letterSpacing: "0.3px",
               }}
             >
               Explore WorthCast
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
             </a>
             <a
               href="/about#trailer"
-              aria-label="Watch the WorthCast trailer"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "10px",
-                background: "none",
-                border: "none",
                 color: "var(--white)",
                 fontSize: "15px",
-                fontFamily: "var(--font-body)",
                 textDecoration: "none",
                 padding: "14px 0",
               }}
             >
-              <span
-                aria-hidden="true"
-                style={{
-                  width: "42px",
-                  height: "42px",
-                  border: "1.5px solid currentColor",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24"
-                  fill="currentColor" aria-hidden="true">
-                  <polygon points="5 3 19 12 5 21 5 3" />
-                </svg>
-              </span>
               Watch Trailer
             </a>
           </div>
 
-          {/* Stats */}
-          {/* [DATA: replace with live counts once platform launches] */}
           <div
-            aria-label="WorthCast platform highlights"
             style={{
               display: "flex",
               gap: "40px",
-              flexWrap: "wrap",
+              flexWrap: "wrap" as const,
               marginTop: "56px",
               paddingTop: "40px",
               borderTop: "1px solid var(--border)",
@@ -227,7 +178,7 @@
                   style={{
                     fontSize: "12px",
                     color: "var(--muted)",
-                    textTransform: "uppercase",
+                    textTransform: "uppercase" as const,
                     letterSpacing: "1px",
                     marginTop: "4px",
                   }}
@@ -239,7 +190,7 @@
           </div>
         </div>
 
-        {/* Right — decorative featured card */}
+        {/* Right — decorative */}
         <div
           aria-hidden="true"
           style={{
@@ -258,76 +209,18 @@
               boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
             }}
           >
-            {/* Thumb */}
             <div
               style={{
                 width: "100%",
                 aspectRatio: "16/10",
-                background: "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
-                position: "relative",
+                background:
+                  "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                overflow: "hidden",
               }}
             >
               <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 40px,
-                    rgba(201,168,76,0.03) 40px,
-                    rgba(201,168,76,0.03) 41px
-                  )`,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: `
-                    linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 50%),
-                    linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.8) 100%)
-                  `,
-                }}
-              />
-              {/* Live badge */}
-              <span
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  left: "16px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "5px",
-                  background: "var(--red)",
-                  color: "#fff",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  letterSpacing: "1.2px",
-                  padding: "4px 10px",
-                  borderRadius: "4px",
-                  textTransform: "uppercase",
-                  zIndex: 2,
-                }}
-              >
-                <span
-                  style={{
-                    width: "5px",
-                    height: "5px",
-                    background: "#fff",
-                    borderRadius: "50%",
-                    flexShrink: 0,
-                  }}
-                />
-                Live Now
-              </span>
-              {/* Decorative play */}
-              <div
-                role="presentation"
                 style={{
                   width: "72px",
                   height: "72px",
@@ -336,59 +229,43 @@
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  position: "relative",
-                  zIndex: 2,
                 }}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24"
-                  fill="var(--black)" aria-hidden="true">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="var(--black)"
+                  aria-hidden="true"
+                >
                   <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
               </div>
             </div>
-
-            {/* Info */}
             <div style={{ padding: "20px 24px" }}>
               <p
                 style={{
-                  fontSize: "11px",
-                  color: "var(--gold)",
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  fontWeight: 600,
-                  marginBottom: "6px",
-                }}
-              >
-                ✦ Documentary
-              </p>
-              <p
-                style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "20px",
+                  fontSize: "18px",
                   color: "var(--white)",
-                  marginBottom: "8px",
                   lineHeight: 1.3,
                 }}
               >
                 The Architecture of Virtue: How Ancient Wisdom Shapes Modern Life
               </p>
-              <div
+              <p
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
                   fontSize: "13px",
                   color: "var(--muted)",
-                  flexWrap: "wrap",
+                  marginTop: "8px",
                 }}
               >
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  24.8K watching
-                </span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                  <svg width="13" height="13" viewBox="0​​​​​​​​​​​​​​​​
+                24.8K watching · 1h 24m
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
