@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
+import MuxPlayer from "@/components/MuxPlayer";
 
-// [DATA: replace with real video data from Supabase + Mux]
+// [DATA: replace with real video data from Supabase]
 const mockVideo = {
   id: "silence-spiritual-practice",
   title: "Why Silence Is the Most Powerful Spiritual Practice",
@@ -10,14 +11,14 @@ const mockVideo = {
   duration: "18:42",
   views: "1.2M",
   publishedAt: "March 2026",
-  muxPlaybackId: null, // replace with real Mux playback ID
+  muxPlaybackId: null as string | null, // replace with real Mux playback ID
   creator: {
     name: "Rev. Marcus Cole",
     username: "revmarcuscole",
     avatar: "R",
     avatarBg: "#C9A84C",
     followers: "214K",
-    bio: "Pastor, theologian, and contemplative teacher. Helping people find depth in faith.",
+    bio: "Pastor, theologian, and contemplative teacher.",
   },
   tags: ["Faith", "Spirituality", "Contemplation", "Prayer"],
 };
@@ -89,94 +90,76 @@ export default function WatchPage() {
           <div style={{ borderRight: "1px solid var(--border)" }}>
 
             {/* Video Player */}
-            <div
-              style={{
-                width: "100%",
-                aspectRatio: "16/9",
-                background: "#000",
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {mockVideo.muxPlaybackId ? (
-                // Real Mux player goes here once connected
-                <div />
-              ) : (
-                // Placeholder player
+            {mockVideo.muxPlaybackId ? (
+              <MuxPlayer
+                playbackId={mockVideo.muxPlaybackId}
+                title={mockVideo.title}
+              />
+            ) : (
+              // Placeholder — shows until real video is uploaded
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "16/9",
+                  background:
+                    "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "20px",
+                  position: "relative",
+                }}
+              >
                 <div
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    background:
-                      "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
+                    width: "80px",
+                    height: "80px",
+                    background: "var(--gold)",
+                    borderRadius: "50%",
                     display: "flex",
-                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "24px",
-                    position: "relative",
                   }}
                 >
-                  {/* Play button */}
-                  <button
-                    aria-label="Play video"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      background: "var(--gold)",
-                      border: "none",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                    }}
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="var(--black)"
                   >
-                    <svg
-                      width="28"
-                      height="28"
-                      viewBox="0 0 24 24"
-                      fill="var(--black)"
-                    >
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                  </button>
-                  <p
-                    style={{
-                      color: "rgba(255,255,255,0.5)",
-                      fontSize: "14px",
-                      fontFamily: "var(--font-body)",
-                    }}
-                  >
-                    Video player loads once Mux is connected
-                  </p>
-
-                  {/* Duration badge */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      bottom: "16px",
-                      right: "16px",
-                      background: "rgba(0,0,0,0.8)",
-                      color: "#fff",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      padding: "4px 10px",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    {mockVideo.duration}
-                  </span>
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
                 </div>
-              )}
-            </div>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: "14px",
+                    fontFamily: "var(--font-body)",
+                  }}
+                >
+                  Upload a video to see it play here
+                </p>
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: "16px",
+                    right: "16px",
+                    background: "rgba(0,0,0,0.8)",
+                    color: "#fff",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    padding: "4px 10px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {mockVideo.duration}
+                </span>
+              </div>
+            )}
 
             {/* Video Info */}
             <div style={{ padding: "32px 40px" }}>
-
-              {/* Category + Title */}
               <p
                 style={{
                   fontSize: "11px",
@@ -202,7 +185,7 @@ export default function WatchPage() {
                 {mockVideo.title}
               </h1>
 
-              {/* Meta row */}
+              {/* Meta */}
               <div
                 style={{
                   display: "flex",
@@ -221,7 +204,7 @@ export default function WatchPage() {
                 <span>{mockVideo.duration}</span>
               </div>
 
-              {/* Creator row */}
+              {/* Creator */}
               <div
                 style={{
                   display: "flex",
@@ -306,13 +289,7 @@ export default function WatchPage() {
               </p>
 
               {/* Tags */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  flexWrap: "wrap",
-                }}
-              >
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 {mockVideo.tags.map((tag) => (
                   <span
                     key={tag}
@@ -347,13 +324,7 @@ export default function WatchPage() {
             </h2>
 
             {/* [DATA: replace with real related videos from Supabase] */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-              }}
-            >
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {relatedVideos.map((video) => (
                 <a
                   key={video.id}
@@ -365,7 +336,6 @@ export default function WatchPage() {
                     color: "inherit",
                   }}
                 >
-                  {/* Thumbnail */}
                   <div
                     style={{
                       width: "140px",
@@ -397,8 +367,6 @@ export default function WatchPage() {
                       {video.duration}
                     </span>
                   </div>
-
-                  {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p
                       style={{
@@ -427,12 +395,7 @@ export default function WatchPage() {
                     >
                       {video.title}
                     </h3>
-                    <p
-                      style={{
-                        fontSize: "12px",
-                        color: "var(--muted)",
-                      }}
-                    >
+                    <p style={{ fontSize: "12px", color: "var(--muted)" }}>
                       {video.creator} · {video.views} views
                     </p>
                   </div>
