@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorthCast — Stream What Matters</title>
+<meta name="description" content="WorthCast is the open streaming platform for values-aligned creators and viewers. Stream what matters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+:root {
+  /* Colors */
+  --black:       #080808;
+  --dark:        #111111;
+  --card:        #161616;
+  --border:      #2a2a2a;
+  --gold:        #C9A84C;
+  --gold-light:  #E8C97A;
+  --gold-dim:    rgba(201,168,76,0.14);
+  --gold-border: rgba(201,168,76,0.28);
+  --white:       #F5F2EC;
+  --muted:       #9a9a9a;   /* lifted from #888 for better contrast */
+  --red:         #E03C2F;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif:   'Playfair Display', serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Spacing */
+  --sp-xs:  8px;
+  --sp-sm:  16px;
+  --sp-md:  24px;
+  --sp-lg:  40px;
+  --sp-xl:  60px;
+  --sp-2xl: 80px;
+
+  /* Radius */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   16px;
+  --r-pill: 100px;
+
+  /* Shadows */
+  --shadow-card: 0 20px 40px rgba(0,0,0,0.4);
+  --shadow-hero: 0 40px 80px rgba(0,0,0,0.6);
+  --shadow-gold: 0 12px 32px rgba(201,168,76,0.28);
+
+  /* Transitions — specific properties only */
+  --t-color:     color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  --t-lift:      transform 0.25s ease;
+
+  /* Nav */
+  --nav-h: 68px;
+}
+
+/* ============================================================
+   2. RESET / BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html  { scroll-behavior: smooth; }
+body  {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img, svg { display: block; }
+ul  { list-style: none; }
+a   { color: inherit; }
+
+/* ============================================================
+   NOISE OVERLAY — static, no repaint cost
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* ============================================================
+   3. UTILITIES
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.text-gold  { color: var(--gold); }
+.text-muted { color: var(--muted); }
+.section-bg-dark {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Focus visible — keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ticker-inner { animation: none; }
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.45; transform: scale(0.75); }
+}
+@keyframes ripple {
+  0%   { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+  70%  { box-shadow: 0 0 0 18px rgba(201,168,76,0); }
+  100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   4. COMPONENTS
+   ============================================================ */
+
+/* --- BUTTONS --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-xs);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--r-sm);
+  padding: 9px 22px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: var(--t-color), var(--t-lift);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.btn-lg { font-size: 15px; padding: 14px 36px; }
+.btn-sm { font-size: 13px; padding: 7px 16px; }
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--black);
+  border-color: var(--gold);
+}
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold);
+}
+.btn-primary svg { transition: transform 0.2s ease; }
+.btn-primary:hover svg,
+.btn-primary:focus-visible svg { transform: translateX(3px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--border);
+}
+.btn-ghost:hover,
+.btn-ghost:focus-visible { border-color: var(--gold); color: var(--gold); }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--black);
+  border-color: var(--gold);
+}
+.btn-gold:hover,
+.btn-gold:focus-visible { background: var(--gold-light); transform: translateY(-1px); }
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: var(--t-color);
+}
+.btn-upload:hover,
+.btn-upload:focus-visible { border-color: var(--white); color: var(--white); }
+
+.btn-follow {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--white);
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  padding: 7px 18px;
+  transition: var(--t-color);
+  margin-bottom: 14px;
+}
+.btn-follow:hover,
+.btn-follow:focus-visible { border-color: var(--gold); color: var(--gold); }
+
+/* Play button (hero secondary) */
+.btn-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 15px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 14px 0;
+  text-decoration: none;
+}
+.btn-play:hover,
+.btn-play:focus-visible { color: var(--gold); }
+
+.play-circle {
+  width: 42px; height: 42px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+}
+.btn-play:hover .play-circle,
+.btn-play:focus-visible .play-circle {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+}
+
+/* --- LOGO --- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.logo-icon::after {
+  content: '';
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid var(--black);
+  margin-left: 2px;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.logo-text span { color: var(--gold); }
+
+/* --- BADGES --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.badge--live   { background: var(--red); color: #fff; }
+.badge--editor { background: var(--gold); color: var(--black); }
+
+.live-dot {
+  width: 5px; height: 5px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+  flex-shrink: 0;
+}
+
+/* Hero badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  width: fit-content;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+/* --- AVATARS --- */
+.avatar {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--black);
+  flex-shrink: 0;
+}
+.avatar--sm  { width: 20px; height: 20px; font-size: 10px; }
+.avatar--md  { width: 26px; height: 26px; font-size: 12px; }
+.avatar--lg  { width: 72px; height: 72px; font-size: 26px; margin-bottom: 14px; }
+
+.avatar--gold  { background: var(--gold); }
+.avatar--teal  { background: #4ECDC4; }
+.avatar--coral { background: #FF6B6B; }
+.avatar--green { background: #95E77E; }
+.avatar--amber { background: #FFC857; }
+.avatar--blue  { background: #84C5F4; }
+.avatar--peach { background: #E8A87C; }
+
+/* --- THUMBNAIL THEMES --- */
+.thumb-faith       { background: linear-gradient(135deg,#1a1a2e,#2d1b4e); }
+.thumb-documentary { background: linear-gradient(135deg,#0d2137,#1a4a6e); }
+.thumb-education   { background: linear-gradient(135deg,#1e1200,#3d2800); }
+.thumb-wellbeing   { background: linear-gradient(135deg,#0a1f0a,#1a3d1a); }
+.thumb-editor      { background: linear-gradient(135deg,#1a0a2e,#2d1b4e,#4a2d6e); }
+.thumb-music       { background: linear-gradient(135deg,#1f1000,#4a2800); }
+.thumb-leadership  { background: linear-gradient(135deg,#001a1f,#003d4a); }
+
+/* --- VIDEO CARDS --- */
+.video-card {
+  background: var(--card);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.video-card:hover,
+.video-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,0.3);
+  box-shadow: var(--shadow-card);
+}
+
+.video-thumb {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+}
+.thumb-bg {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  transition: transform 0.4s ease;
+}
+.video-card:hover .thumb-bg,
+.video-card:focus-visible .thumb-bg { transform: scale(1.05); }
+
+.thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-card:hover .thumb-overlay,
+.video-card:focus-visible .thumb-overlay { opacity: 1; }
+
+.thumb-overlay--visible {
+  opacity: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.thumb-play {
+  width: 48px; height: 48px;
+  background: rgba(201,168,76,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-duration {
+  position: absolute;
+  bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.thumb-duration--lg { font-size: 12px; padding: 4px 10px; }
+
+.video-info { padding: 14px var(--sp-sm) var(--sp-sm); }
+
+.video-cat {
+  font-size: 10px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.video-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.video-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.video-meta--top { margin-top: 12px; }
+.video-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Large card (editor's pick) */
+.video-card-large {
+  background: var(--card);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.video-card-large:hover,
+.video-card-large:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,0.3);
+  box-shadow: var(--shadow-card);
+}
+.large-thumb {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+}
+.large-thumb .thumb-bg { font-size: 72px; }
+.large-info { padding: 20px var(--sp-md) var(--sp-md); }
+.large-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+/* --- SECTION TYPOGRAPHY --- */
+.section-label {
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-bottom: var(--sp-xs);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 42px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.see-all {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s ease;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+.see-all:hover,
+.see-all:focus-visible { gap: 10px; }
+
+/* --- WHY CARDS --- */
+.why-icon {
+  width: 48px; height: 48px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+.why-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  color: var(--white);
+}
+.why-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+/* --- CREATOR CARD --- */
+.creator-name  { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.creator-niche {
+  font-size: 12px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.creator-stats {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12px;
+  color: var(--muted);
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+}
+.creator-stat strong {
+  display: block;
+  font-size: 15px;
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* --- CATEGORY CARD --- */
+.cat-icon  { font-size: 28px; margin-bottom: 10px; display: block; line-height: 1; }
+.cat-name  { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+.cat-count { font-size: 11px; color: var(--muted); }
+
+/* --- TICKER --- */
+.ticker { background: var(--gold); padding: 10px 0; overflow: hidden; }
+.ticker-inner {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 28s linear infinite;
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: 0 var(--sp-lg);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--black);
+}
+.ticker-dot {
+  width: 4px; height: 4px;
+  background: var(--black);
+  border-radius: 50%;
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   5. LAYOUT
+   ============================================================ */
+
+/* HEADER */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-lg);
+  height: var(--nav-h);
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  gap: var(--sp-sm);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+.nav-links a:hover,
+.nav-links a:focus-visible { color: var(--white); }
+
+.nav-search {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+  margin: 0 var(--sp-lg);
+}
+.nav-search input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 9px 16px 9px 40px;
+  color: var(--white);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.nav-search input::placeholder { color: var(--muted); }
+.nav-search input:focus { border-color: var(--gold); }
+.nav-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  flex-shrink: 0;
+}
+/* Mobile toggle — hidden until a drawer/menu JS implementation is added.
+   To activate: remove display:none here and wire up click → open drawer. */
+.nav-mobile-toggle { display: none; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(224,60,47,0.04) 0%, transparent 60%),
+    var(--black);
+  pointer-events: none;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--sp-2xl) 60px var(--sp-2xl) var(--sp-2xl);
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 7vw, 96px);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 8px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+.hero-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+.hero-desc {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 460px;
+  line-height: 1.75;
+  margin-bottom: 44px;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.hero-cta {
+  display: flex;
+  gap: var(--sp-sm);
+  align-items: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+.hero-stats {
+  display: flex;
+  gap: var(--sp-lg);
+  flex-wrap: wrap;
+  margin-top: 56px;
+  padding-top: var(--sp-lg);
+  border-top: 1px solid var(--border);
+  animation: fadeUp 0.8s ease 0.5s both;
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.hero-right {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-2xl) var(--sp-2xl) var(--sp-2xl) var(--sp-lg);
+  animation: fadeIn 1s ease 0.3s both;
+}
+.featured-card {
+  width: 100%;
+  background: var(--card);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-hero);
+}
+.featured-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.featured-thumb-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent, transparent 40px,
+    rgba(201,168,76,0.03) 40px,
+    rgba(201,168,76,0.03) 41px
+  );
+}
+.featured-thumb-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 50%),
+    linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.8) 100%);
+}
+.badge-live-thumb {
+  position: absolute;
+  top: 16px; left: 16px;
+  z-index: 2;
+}
+.play-btn-large {
+  width: 72px; height: 72px;
+  background: rgba(201,168,76,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  animation: ripple 2.5s infinite;
+  /* Decorative only — no interactive states needed */
+}
+.featured-info { padding: 20px var(--sp-md); }
+.featured-category {
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.featured-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: var(--sp-xs);
+  line-height: 1.3;
+}
+.featured-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  font-size: 13px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.featured-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.featured-rating { color: var(--gold); margin-left: auto; }
+
+/* PAGE SECTIONS */
+.page-section { padding: var(--sp-2xl); }
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--sp-lg);
+  gap: var(--sp-md);
+  flex-wrap: wrap;
+}
+
+/* GRIDS */
+.video-grid      { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.categories-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: var(--sp-sm); }
+.featured-row    { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; }
+.creators-grid   { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+
+.category-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-md) 20px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+}
+.category-card:hover,
+.category-card:focus-visible {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  transform: translateY(-2px);
+}
+
+.creator-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px 20px;
+  text-align: center;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.creator-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-3px); }
+
+/* WHY GRID */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 2px;
+  background: var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-top: var(--sp-sm);
+}
+.why-card {
+  background: var(--dark);
+  padding: var(--sp-lg) 36px;
+  transition: background-color 0.3s ease;
+}
+.why-card:hover { background: var(--card); }
+
+/* CTA BANNER */
+.cta-banner {
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,168,76,0.09) 0%, transparent 70%),
+    var(--dark);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 100px var(--sp-2xl);
+}
+.cta-banner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 80px);
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+.cta-banner p {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 540px;
+  margin: 0 auto 40px;
+  line-height: 1.65;
+}
+.cta-actions {
+  display: flex;
+  gap: var(--sp-sm);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* FOOTER */
+.site-footer {
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  padding: 60px var(--sp-2xl) var(--sp-lg);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 48px;
+}
+.footer-brand p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-top: var(--sp-sm);
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul a {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+.footer-col ul a:hover,
+.footer-col ul a:focus-visible { color: var(--gold); }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-sm);
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer-legal {
+  display: flex;
+  gap: var(--sp-md);
+  flex-wrap: wrap;
+}
+.footer-legal a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+.footer-legal a:hover,
+.footer-legal a:focus-visible { color: var(--gold); }
+.footer-tagline {
+  color: var(--gold);
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ============================================================
+   6. RESPONSIVE — 1200px
+   ============================================================ */
+@media (max-width: 1200px) {
+  .video-grid      { grid-template-columns: repeat(3,1fr); }
+  .categories-grid { grid-template-columns: repeat(3,1fr); }
+  .featured-row    { grid-template-columns: 1fr 1fr; }
+  .featured-row .video-card:last-child { display: none; }
+}
+
+/* ============================================================
+   RESPONSIVE — 900px
+   ============================================================ */
+@media (max-width: 900px) {
+  .hero-grid         { grid-template-columns: 1fr; }
+  .hero-right        { display: none; }
+  .nav-links         { display: none; }
+  .nav-search        { display: none; }
+  .btn-upload        { display: none; }
+
+  .page-section      { padding: var(--sp-xl) var(--sp-md); }
+  .video-grid        { grid-template-columns: repeat(2,1fr); }
+  .categories-grid   { grid-template-columns: repeat(3,1fr); }
+  .creators-grid     { grid-template-columns: repeat(2,1fr); }
+  .why-grid          { grid-template-columns: 1fr; }
+  .featured-row      { grid-template-columns: 1fr; }
+  .footer-top        { grid-template-columns: 1fr 1fr; gap: var(--sp-lg); }
+  .cta-banner        { padding: 60px var(--sp-md); }
+}
+
+/* ============================================================
+   RESPONSIVE — 600px (mobile)
+   ============================================================ */
+@media (max-width: 600px) {
+  .site-header   { padding: 0 var(--sp-sm); }
+
+  .hero-left     { padding: var(--sp-lg) var(--sp-sm); }
+  .hero-cta      { flex-direction: column; align-items: flex-start; }
+  .hero-stats    { gap: var(--sp-md); }
+
+  .video-grid        { grid-template-columns: 1fr; }
+  .categories-grid   { grid-template-columns: repeat(2,1fr); }
+  .creators-grid     { grid-template-columns: 1fr; }
+  .featured-row      { grid-template-columns: 1fr; }
+  .footer-top        { grid-template-columns: 1fr; gap: var(--sp-md); }
+  .footer-bottom     { flex-direction: column; align-items: flex-start; }
+  .footer-legal      { flex-direction: column; gap: var(--sp-xs); }
+
+  .cta-actions       { flex-direction: column; align-items: stretch; }
+  .cta-actions .btn  { justify-content: center; }
+
+  .why-grid          { border-radius: 0; }
+  .nav-right .btn-ghost { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header" role="banner">
+
+  <a href="/" class="logo" aria-label="WorthCast — go to homepage">
+    <div class="logo-icon" aria-hidden="true"></div>
+    <span class="logo-text">Worth<span>Cast</span></span>
+  </a>
+
+  <div class="nav-search" role="search">
+    <label for="site-search" class="sr-only">Search WorthCast</label>
+    <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="site-search" type="search" placeholder="Search videos, creators, topics…"
+           autocomplete="off">
+  </div>
+
+  <nav aria-label="Primary navigation">
+    <ul class="nav-links">
+      <li><a href="/browse">Browse</a></li>
+      <li><a href="/live">Live</a></li>
+      <li><a href="/creators">Creators</a></li>
+      <li><a href="/categories">Categories</a></li>
+    </ul>
+  </nav>
+
+  <div class="nav-right">
+    <a href="/upload" class="btn-upload" aria-label="Upload a video">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Upload
+    </a>
+    <a href="/signin" class="btn btn-ghost btn-sm">Sign In</a>
+    <a href="/join"   class="btn btn-gold  btn-sm">Start Free</a>
+  </div>
+
+  <!-- Mobile nav toggle: add here once a drawer/off-canvas menu is implemented -->
+
+</header>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main id="main-content">
+
+  <!-- HERO -------------------------------------------------- -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true"></div>
+
+    <div class="hero-grid">
+
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="hero-badge-dot" aria-hidden="true"></span>
+          Values-Aligned Streaming
+        </div>
+
+        <h1 id="hero-heading" class="hero-title">
+          STREAM<br>WHAT<br><span class="text-gold">MATTERS.</span>
+        </h1>
+
+        <p class="hero-subtitle">Content worth your time. Creators worth following.</p>
+
+        <p class="hero-desc">
+          WorthCast is the open streaming platform for creators and viewers who believe
+          the content you watch shapes the person you become.
+        </p>
+
+        <div class="hero-cta">
+          <a href="/browse" class="btn btn-primary btn-lg">
+            Explore WorthCast
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="/about#trailer" class="btn-play" aria-label="Watch the WorthCast trailer">
+            <span class="play-circle" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </span>
+            Watch Trailer
+          </a>
+        </div>
+
+        <!-- [DATA: replace with live counts from API] -->
+        <div class="hero-stats" aria-label="WorthCast platform stats">
+          <div><div class="stat-num">12K+</div><div class="stat-label">Videos</div></div>
+          <div><div class="stat-num">3.4K</div><div class="stat-label">Creators</div></div>
+          <div><div class="stat-num">180+</div><div class="stat-label">Countries</div></div>
+          <div><div class="stat-num">Free</div><div class="stat-label">To Join</div></div>
+        </div>
+      </div>
+
+      <!-- Decorative illustration — fully hidden from assistive technology.
+           Replace with a real linked card once live stream data is available. -->
+      <div class="hero-right" aria-hidden="true">
+        <div class="featured-card">
+          <div class="featured-thumb">
+            <div class="featured-thumb-pattern"></div>
+            <div class="featured-thumb-gradient"></div>
+            <span class="badge badge--live badge-live-thumb">
+              <span class="live-dot"></span> Live Now
+            </span>
+            <!-- Decorative play icon — not a real button -->
+            <div class="play-btn-large" role="presentation">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="featured-info">
+            <p class="featured-category">✦ Documentary</p>
+            <p class="featured-title">
+              The Architecture of Virtue: How Ancient Wisdom Shapes Modern Life
+            </p>
+            <div class="featured-meta">
+              <span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                24.8K watching
+              </span>
+              <span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                1h 24m
+              </span>
+              <span class="featured-rating">★ 4.9</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TICKER — decorative, not keyboard navigable -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-inner">
+      <span class="ticker-item">Trending Now <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Faith &amp; Spirituality <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Documentary Films <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Family Content <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Health &amp; Wellbeing <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Education <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Arts &amp; Culture <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Live Events <span class="ticker-dot"></span></span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item">Trending Now <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Faith &amp; Spirituality <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Documentary Films <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Family Content <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Health &amp; Wellbeing <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Education <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Arts &amp; Culture <span class="ticker-dot"></span></span>
+      <span class="ticker-item">Live Events <span class="ticker-dot"></span></span>
+    </div>
+  </div>
+
+  <!-- TRENDING ---------------------------------------------- -->
+  <!-- [DATA: inject trending videos from API] -->
+  <section class="page-section" aria-labelledby="trending-heading">
+    <div class="section-header">
+      <div>
+        <p class="section-label" aria-hidden="true">↑ Rising Fast</p>
+        <h2 id="trending-heading" class="section-title">Trending Videos</h2>
+      </div>
+      <a href="/browse?sort=trending" class="see-all">See all trending →</a>
+    </div>
+
+    <ul class="video-grid" role="list">
+
+      <li>
+        <a href="/watch/silence-spiritual-practice" class="video-card"
+           aria-label="Why Silence Is the Most Powerful Spiritual Practice, 18 minutes, 1.2 million views">
+          <div class="video-thumb">
+            <div class="thumb-bg thumb-faith" aria-hidden="true">🕊️</div>
+            <div class="thumb-overlay" aria-hidden="true">
+              <div class="thumb-play">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <span class="thumb-duration">18:42</span>
+          </div>
+          <div class="video-info">
+            <p class="video-cat">Faith</p>
+            <h3 class="video-title">Why Silence Is the Most Powerful Spiritual Practice</h3>
+            <div class="video-meta">
+              <span class="video-author">
+                <span class="avatar avatar--sm avatar--gold" aria-hidden="true">R</span>
+                Rev. Marcus Cole
+              </span>
+              <span>1.2M views</span>
+            </div>
+          </div>
+        </a>
+      </li>
+
+      <li>
+        <a href="/watch/rivers-of-memory" class="video-card"
+           aria-label="Rivers of Memory documentary, 44 minutes, 890 thousand views">
+          <div class="video-thumb">
+            <div class="thumb-bg thumb-documentary" aria-hidden="true">🌊</div>
+            <div class="thumb-overlay" aria-hidden="true">
+              <div class="thumb-play">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <span class="thumb-duration">44:10</span>
+          </div>
+          <div class="video-info">
+            <p class="video-cat">Documentary</p>
+            <h3 class="video-title">Rivers of Memory: Indigenous Communities and Their Sacred Waters</h3>
+            <div class="video-meta">
+              <span class="video-author">
+                <span class="avatar avatar--sm avatar--teal" aria-hidden="true">E</span>
+                EarthFilms
+              </span>
+              <span>890K views</span>
+            </div>
+          </div>
+        </a>
+      </li>
+
+      <li>
+        <a href="/watch/50-classic-books" class="video-card"
+           aria-label="Reading 50 Classic Books Changed How I Think, 31 minutes, 654 thousand views">
+          <div class="video-thumb">
+            <div class="thumb-bg thumb-education" aria-hidden="true">📖</div>
+            <div class="thumb-overlay" aria-hidden="true">
+              <div class="thumb-play">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <span class="thumb-duration">31:05</span>
+          </div>
+          <div class="video-info">
+            <p class="video-cat">Education</p>
+            <h3 class="video-title">Reading 50 Classic Books Changed How I Think About Everything</h3>
+            <div class="video-meta">
+              <span class="video-author">
+                <span class="avatar avatar--sm avatar--coral" aria-hidden="true">S</span>
+                Sophia Reads
+              </span>
+              <span>654K views</span>
+            </div>
+          </div>
+        </a>
+      </li>
+
+      <li>
+        <a href="/watch/ancient-art-of-fasting" class="video-card"
+           aria-label="The Ancient Art of Fasting, 22 minutes, 2.1 million views">
+          <div class="video-thumb">
+            <div class="thumb-bg thumb-wellbeing" aria-hidden="true">🌿</div>
+            <div class="thumb-overlay" aria-hidden="true">
+              <div class="thumb-play">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <span class="thumb-duration">22:18</span>
+          </div>
+          <div class="video-info">
+            <p class="video-cat">Wellbeing</p>
+            <h3 class="video-title">The Ancient Art of Fasting: What Modern Science Now Confirms</h3>
+            <div class="video-meta">
+              <span class="video-author">
+                <span class="avatar avatar--sm avatar--green" aria-hidden="true">D</span>
+                Dr. Nadia Wells
+              </span>
+              <span>2.1M views</span>
+            </div>
+          </div>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- CATEGORIES -------------------------------------------- -->
+  <!-- [DATA: categories and counts from CMS] -->
+  <section class="page-section section-bg-dark" aria-labelledby="categories-heading">
+    <div class="section-header">
+      <div>
+        <p class="section-label" aria-hidden="true">Explore</p>
+        <h2 id="categories-heading" class="section-title">Browse by Category</h2>
+      </div>
+    </div>
+    <ul class="categories-grid" role="list">
+      <li><a href="/categories/faith"     class="category-card"><span class="cat-icon" aria-hidden="true">✝️</span><span class="cat-name">Faith</span><span class="cat-count">4,210 videos</span></a></li>
+      <li><a href="/categories/film"      class="category-card"><span class="cat-icon" aria-hidden="true">🎬</span><span class="cat-name">Film</span><span class="cat-count">1,830 videos</span></a></li>
+      <li><a href="/categories/education" class="category-card"><span class="cat-icon" aria-hidden="true">📚</span><span class="cat-name">Education</span><span class="cat-count">3,540 videos</span></a></li>
+      <li><a href="/categories/family"    class="category-card"><span class="cat-icon" aria-hidden="true">👨‍👩‍👧</span><span class="cat-name">Family</span><span class="cat-count">2,100 videos</span></a></li>
+      <li><a href="/categories/culture"   class="category-card"><span class="cat-icon" aria-hidden="true">🌍</span><span class="cat-name">Culture</span><span class="cat-count">1,290 videos</span></a></li>
+      <li><a href="/categories/wellbeing" class="category-card"><span class="cat-icon" aria-hidden="true">🩺</span><span class="cat-name">Wellbeing</span><span class="cat-count">980 videos</span></a></li>
+    </ul>
+  </section>
+
+  <!-- EDITOR'S PICKS ---------------------------------------- -->
+  <!-- [DATA: curated picks set by editorial team in CMS] -->
+  <section class="page-section" aria-labelledby="picks-heading">
+    <div class="section-header">
+      <div>
+        <p class="section-label" aria-hidden="true">★ Curated</p>
+        <h2 id="picks-heading" class="section-title">Editor's Picks</h2>
+      </div>
+      <a href="/browse?filter=editors-picks" class="see-all">View all picks →</a>
+    </div>
+
+    <div class="featured-row">
+
+      <a href="/watch/justice-and-mercy" class="video-card-large"
+         aria-label="Justice and Mercy documentary, 1 hour 44 minutes, 3.4 million views, Editor's Choice">
+        <div class="large-thumb">
+          <div class="thumb-bg thumb-editor" aria-hidden="true">⚖️</div>
+          <div class="thumb-overlay thumb-overlay--visible" aria-hidden="true">
+            <span class="badge badge--editor">★ Editor's Choice</span>
+          </div>
+          <span class="thumb-duration thumb-duration--lg">1:44:22</span>
+        </div>
+        <div class="large-info">
+          <p class="video-cat">Documentary Feature</p>
+          <h3 class="large-title">Justice &amp; Mercy: When Law Meets Conscience in the Modern Age</h3>
+          <div class="video-meta video-meta--top">
+            <span class="video-author">
+              <span class="avatar avatar--md avatar--peach" aria-hidden="true">J</span>
+              James Whitfield Films
+            </span>
+            <span>3.4M views</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/watch/ancient-hymns" class="video-card"
+         aria-label="Songs That Survived History, 56 minutes, 780 thousand views">
+        <div class="video-thumb">
+          <div class="thumb-bg thumb-music" aria-hidden="true">🎵</div>
+          <div class="thumb-overlay" aria-hidden="true">
+            <div class="thumb-play">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <span class="thumb-duration">56:14</span>
+        </div>
+        <div class="video-info">
+          <p class="video-cat">Music &amp; Worship</p>
+          <h3 class="video-title">Songs That Survived History: The Most Ancient Hymns Still Sung Today</h3>
+          <div class="video-meta">
+            <span class="video-author">
+              <span class="avatar avatar--sm avatar--amber" aria-hidden="true">A</span>
+              AnchorSound
+            </span>
+            <span>780K views</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/watch/servant-leadership" class="video-card"
+         aria-label="Servant Leadership, 38 minutes, 1.5 million views">
+        <div class="video-thumb">
+          <div class="thumb-bg thumb-leadership" aria-hidden="true">🧭</div>
+          <div class="thumb-overlay" aria-hidden="true">
+            <div class="thumb-play">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--black)" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <span class="thumb-duration">38:55</span>
+        </div>
+        <div class="video-info">
+          <p class="video-cat">Leadership</p>
+          <h3 class="video-title">Servant Leadership: The Most Radical Idea That Actually Works</h3>
+          <div class="video-meta">
+            <span class="video-author">
+              <span class="avatar avatar--sm avatar--blue" aria-hidden="true">T</span>
+              ThinkDeep
+            </span>
+            <span>1.5M views</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CREATORS ---------------------------------------------- -->
+  <!-- [DATA: featured creator profiles from CMS or API] -->
+  <section class="page-section section-bg-dark" aria-labelledby="creators-heading">
+    <div class="section-header">
+      <div>
+        <p class="section-label" aria-hidden="true">Community</p>
+        <h2 id="creators-heading" class="section-title">Featured Creators</h2>
+      </div>
+      <a href="/creators/apply" class="see-all">Become a creator →</a>
+    </div>
+
+    <ul class="creators-grid" role="list">
+      <li class="creator-card">
+        <span class="avatar avatar--lg avatar--gold" aria-hidden="true">MC</span>
+        <h3 class="creator-name">Marcus Cole</h3>
+        <p class="creator-niche">Faith &amp; Theology</p>
+        <button class="btn-follow" type="button" aria-label="Follow Marcus Cole">+ Follow</button>
+        <div class="creator-stats">
+          <div class="creator-stat"><strong>214K</strong> followers</div>
+          <div class="creator-stat"><strong>182</strong> videos</div>
+        </div>
+      </li>
+      <li class="creator-card">
+        <span class="avatar avatar--lg avatar--teal" aria-hidden="true">EF</span>
+        <h3 class="creator-name">EarthFilms Co.</h3>
+        <p class="creator-niche">Documentary</p>
+        <button class="btn-follow" type="button" aria-label="Follow EarthFilms Co.">+ Follow</button>
+        <div class="creator-stats">
+          <div class="creator-stat"><strong>98K</strong> followers</div>
+          <div class="creator-stat"><strong>64</strong> videos</div>
+        </div>
+      </li>
+      <li class="creator-card">
+        <span class="avatar avatar--lg avatar--coral" aria-hidden="true">SR</span>
+        <h3 class="creator-name">Sophia Reads</h3>
+        <p class="creator-niche">Education</p>
+        <button class="btn-follow" type="button" aria-label="Follow Sophia Reads">+ Follow</button>
+        <div class="creator-stats">
+          <div class="creator-stat"><strong>341K</strong> followers</div>
+          <div class="creator-stat"><strong>230</strong> videos</div>
+        </div>
+      </li>
+      <li class="creator-card">
+        <span class="avatar avatar--lg avatar--green" aria-hidden="true">NW</span>
+        <h3 class="creator-name">Dr. Nadia Wells</h3>
+        <p class="creator-niche">Wellbeing</p>
+        <button class="btn-follow" type="button" aria-label="Follow Dr. Nadia Wells">+ Follow</button>
+        <div class="creator-stats">
+          <div class="creator-stat"><strong>512K</strong> followers</div>
+          <div class="creator-stat"><strong>310</strong> videos</div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- WHY WORTHCAST ----------------------------------------- -->
+  <section class="page-section section-bg-dark" aria-labelledby="why-heading">
+    <div class="section-header">
+      <div>
+        <p class="section-label" aria-hidden="true">Our Standard</p>
+        <h2 id="why-heading" class="section-title">Why WorthCast</h2>
+      </div>
+    </div>
+    <ul class="why-grid" role="list">
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">⚡</div>
+        <h3 class="why-title">Creator-First Revenue</h3>
+        <p class="why-desc">Earn from subscriptions, tips, and ad revenue. WorthCast is designed to put more money back into the hands of the people creating the content.</p>
+      </li>
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">🛡️</div>
+        <h3 class="why-title">Values-Aligned by Design</h3>
+        <p class="why-desc">No algorithm designed to outrage. No content that degrades. WorthCast is built around content that builds people up and enriches communities.</p>
+      </li>
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">🌐</div>
+        <h3 class="why-title">Open to All Creators</h3>
+        <p class="why-desc">Faith, film, education, culture, family — any creator with something worth saying has a home here. Post your first video free, no subscription required.</p>
+      </li>
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">🎬</div>
+        <h3 class="why-title">Cinema-Grade Player</h3>
+        <p class="why-desc">Adaptive streaming, 4K support, and an immersive viewing experience built for long-form content — films, lectures, and documentaries.</p>
+      </li>
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">🤝</div>
+        <h3 class="why-title">Real Community</h3>
+        <p class="why-desc">Follow creators you trust. Build an audience that shares your values. Connect around content that actually matters — not just what goes viral.</p>
+      </li>
+      <li class="why-card">
+        <div class="why-icon" aria-hidden="true">📱</div>
+        <h3 class="why-title">Watch Anywhere</h3>
+        <p class="why-desc">iOS, Android, Smart TV, desktop — WorthCast goes with you. Offline viewing available on mobile so you never lose access to content that matters.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- CTA BANNER -------------------------------------------- -->
+  <section class="cta-banner" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">YOUR CONTENT<br>HAS <span class="text-gold">WORTH.</span></h2>
+    <p>Join a growing community of creators building audiences around content that actually matters. Start free — no credit card needed.</p>
+    <div class="cta-actions">
+      <a href="/join" class="btn btn-primary btn-lg">
+        Start Creating Free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="/browse" class="btn btn-ghost btn-lg">Browse as Viewer</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="/" class="logo" aria-label="WorthCast home">
+        <div class="logo-icon" aria-hidden="true"></div>
+        <span class="logo-text">Worth<span>Cast</span></span>
+      </a>
+      <p>The open streaming platform for creators and viewers who believe what you watch shapes who you become.</p>
+    </div>
+
+    <nav aria-label="Platform links">
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="/browse">Browse Videos</a></li>
+          <li><a href="/live">Live Streams</a></li>
+          <li><a href="/creators">Creators</a></li>
+          <li><a href="/categories">Categories</a></li>
+          <li><a href="/browse?sort=trending">Trending</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <nav aria-label="Creator links">
+      <div class="footer-col">
+        <h4>Creators</h4>
+        <ul>
+          <li><a href="/upload">Upload Video</a></li>
+          <li><a href="/studio">Creator Studio</a></li>
+          <li><a href="/studio/monetization">Monetization</a></li>
+          <li><a href="/studio/analytics">Analytics</a></li>
+          <li><a href="/creators/guide">Creator Guide</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <nav aria-label="Company links">
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/standards">Our Standards</a></li>
+          <li><a href="/press">Press</a></li>
+          <li><a href="/careers">Careers</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 WorthCast. All rights reserved.</span>
+    <nav aria-label="Legal" class="footer-legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/standards">Content Standards</a>
+      <a href="/cookies">Cookies</a>
+    </nav>
+    <span class="footer-tagline" aria-hidden="true">STREAM WHAT MATTERS</span>
+  </div>
+</footer>
+
+</body>
+</html>
