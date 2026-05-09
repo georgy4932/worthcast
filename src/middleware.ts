@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
             response.cookies.set(name, value, options);
@@ -25,7 +25,6 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Protect upload route
   if (request.nextUrl.pathname.startsWith("/upload")) {
     if (!user) {
       const redirectUrl = new URL("/signin", request.url);
@@ -34,7 +33,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect studio route
   if (request.nextUrl.pathname.startsWith("/studio")) {
     if (!user) {
       const redirectUrl = new URL("/signin", request.url);
