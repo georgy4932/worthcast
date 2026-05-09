@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <main
+    <section
       aria-labelledby="hero-heading"
       style={{
         minHeight: "100vh",
@@ -12,6 +12,67 @@ export default function Hero() {
         background: "var(--black)",
       }}
     >
+      <style>{`
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          flex: 1;
+          position: relative;
+          z-index: 2;
+        }
+        .hero-left {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 80px 60px 80px 80px;
+        }
+        .hero-right {
+          display: flex;
+          align-items: center;
+          padding: 80px 80px 80px 40px;
+        }
+        .hero-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          margin-top: 56px;
+          padding-top: 40px;
+          border-top: 1px solid var(--border);
+        }
+        .hero-cta {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(201,168,76,0.14);
+          border: 1px solid rgba(201,168,76,0.28);
+          padding: 6px 14px;
+          border-radius: 100px;
+          font-size: 11px;
+          font-weight: 500;
+          color: var(--gold);
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          margin-bottom: 32px;
+          width: fit-content;
+          white-space: nowrap;
+        }
+        @media (max-width: 900px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-right { display: none !important; }
+          .hero-left { padding: 40px 24px 60px !important; }
+          .hero-stats { grid-template-columns: 1fr 1fr; gap: 20px; }
+        }
+        @media (max-width: 480px) {
+          .hero-badge { white-space: normal; font-size: 10px; }
+        }
+      `}</style>
+
       <div
         aria-hidden="true"
         style={{
@@ -23,42 +84,22 @@ export default function Hero() {
         }}
       />
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          flex: 1,
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
+      <div className="hero-grid">
+
         {/* Left */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "80px 60px 80px 80px",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "rgba(201,168,76,0.14)",
-              border: "1px solid rgba(201,168,76,0.28)",
-              padding: "6px 14px",
-              borderRadius: "100px",
-              fontSize: "12px",
-              fontWeight: 500,
-              color: "var(--gold)",
-              letterSpacing: "1px",
-              textTransform: "uppercase" as const,
-              marginBottom: "32px",
-              width: "fit-content",
-            }}
-          >
+        <div className="hero-left">
+
+          <div className="hero-badge">
+            <span
+              aria-hidden="true"
+              style={{
+                width: "6px",
+                height: "6px",
+                background: "var(--gold)",
+                borderRadius: "50%",
+                flexShrink: 0,
+              }}
+            />
             Values-Aligned Streaming
           </div>
 
@@ -66,17 +107,14 @@ export default function Hero() {
             id="hero-heading"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(64px, 7vw, 96px)",
+              fontSize: "clamp(56px, 7vw, 96px)",
               lineHeight: 0.95,
               letterSpacing: "2px",
               color: "var(--white)",
               marginBottom: "8px",
             }}
           >
-            STREAM
-            <br />
-            WHAT
-            <br />
+            STREAM<br />WHAT<br />
             <span style={{ color: "var(--gold)" }}>MATTERS.</span>
           </h1>
 
@@ -84,9 +122,9 @@ export default function Hero() {
             style={{
               fontFamily: "var(--font-serif)",
               fontStyle: "italic",
-              fontSize: "22px",
+              fontSize: "clamp(18px, 2.5vw, 22px)",
               color: "var(--muted)",
-              marginBottom: "28px",
+              marginBottom: "20px",
             }}
           >
             Content worth your time. Creators worth following.
@@ -98,21 +136,14 @@ export default function Hero() {
               color: "var(--muted)",
               maxWidth: "460px",
               lineHeight: 1.75,
-              marginBottom: "44px",
+              marginBottom: "36px",
             }}
           >
             WorthCast is the open streaming platform for creators and viewers
             who believe the content you watch shapes the person you become.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              alignItems: "center",
-              flexWrap: "wrap" as const,
-            }}
-          >
+          <div className="hero-cta">
             <a
               href="/browse"
               style={{
@@ -121,11 +152,12 @@ export default function Hero() {
                 gap: "8px",
                 background: "var(--gold)",
                 color: "var(--black)",
-                padding: "14px 36px",
+                padding: "14px 28px",
                 borderRadius: "6px",
                 fontSize: "15px",
                 fontWeight: 700,
                 textDecoration: "none",
+                whiteSpace: "nowrap",
               }}
             >
               Explore WorthCast
@@ -140,21 +172,18 @@ export default function Hero() {
                 fontSize: "15px",
                 textDecoration: "none",
                 padding: "14px 0",
+                whiteSpace: "nowrap",
               }}
             >
               Watch Trailer
             </a>
           </div>
 
+          {/* Stats */}
+          {/* [DATA: replace with live counts once platform launches] */}
           <div
-            style={{
-              display: "flex",
-              gap: "40px",
-              flexWrap: "wrap" as const,
-              marginTop: "56px",
-              paddingTop: "40px",
-              borderTop: "1px solid var(--border)",
-            }}
+            className="hero-stats"
+            aria-label="WorthCast platform highlights"
           >
             {[
               { num: "Open", label: "To Creators" },
@@ -166,7 +195,7 @@ export default function Hero() {
                 <div
                   style={{
                     fontFamily: "var(--font-display)",
-                    fontSize: "36px",
+                    fontSize: "clamp(28px, 3vw, 36px)",
                     color: "var(--gold)",
                     letterSpacing: "1px",
                     lineHeight: 1,
@@ -178,7 +207,7 @@ export default function Hero() {
                   style={{
                     fontSize: "12px",
                     color: "var(--muted)",
-                    textTransform: "uppercase" as const,
+                    textTransform: "uppercase",
                     letterSpacing: "1px",
                     marginTop: "4px",
                   }}
@@ -190,15 +219,8 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right — decorative */}
-        <div
-          aria-hidden="true"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "80px 80px 80px 40px",
-          }}
-        >
+        {/* Right — decorative, hidden on mobile */}
+        <div aria-hidden="true" className="hero-right">
           <div
             style={{
               width: "100%",
@@ -231,13 +253,8 @@ export default function Hero() {
                   justifyContent: "center",
                 }}
               >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="var(--black)"
-                  aria-hidden="true"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24"
+                  fill="var(--black)" aria-hidden="true">
                   <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
               </div>
@@ -253,19 +270,14 @@ export default function Hero() {
               >
                 The Architecture of Virtue: How Ancient Wisdom Shapes Modern Life
               </p>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "var(--muted)",
-                  marginTop: "8px",
-                }}
-              >
+              <p style={{ fontSize: "13px", color: "var(--muted)", marginTop: "8px" }}>
                 24.8K watching · 1h 24m
               </p>
             </div>
           </div>
         </div>
+
       </div>
-    </main>
+    </section>
   );
 }
