@@ -19,62 +19,96 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const isBusy =
+    status === "requesting" ||
+    status === "uploading" ||
+    status === "processing";
+
+  function resetForm() {
+    setStatus("idle");
+    setProgress(0);
+    setTitle("");
+    setDescription("");
+    setFile(null);
+    setError(null);
+  }
+
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
     if (!selected) return;
+
     if (!selected.type.startsWith("video/")) {
       setError("Please select a video file.");
       return;
     }
+
     setFile(selected);
     setError(null);
   }
 
   async function handleUpload() {
-    if (!file) { setError("Please select a video file."); return; }
-    if (!title.trim()) { setError("Please enter a title."); return; }
+    if (!file) {
+      setError("Please select a video file.");
+      return;
+    }
+
+    if (!title.trim()) {
+      setError("Please enter a title.");
+      return;
+    }
 
     setStatus("requesting");
     setError(null);
+    setProgress(0);
 
     try {
-      // Step 1 — Get Mux upload URL
       const res = await fetch("/api/mux/upload", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ title, description }),
-});
-      const { uploadUrl, uploadId } = await res.json();
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim() || null,
+        }),
+      });
 
-      if (!uploadUrl) throw new Error("Failed to get upload URL");
+      if (!res.ok) {
+        throw new Error("Failed to create upload URL.");
+      }
 
-      // Step 2 — Upload file directly to Mux
+      const { uploadUrl } = await res.json();
+
+      if (!uploadUrl) {
+        throw new Error("No upload URL returned.");
+      }
+
       setStatus("uploading");
 
       await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
+
         xhr.upload.addEventListener("progress", (e) => {
           if (e.lengthComputable) {
             setProgress(Math.round((e.loaded / e.total) * 100));
           }
         });
+
         xhr.addEventListener("load", () => {
           if (xhr.status >= 200 && xhr.status < 300) resolve();
-          else reject(new Error("Upload failed"));
+          else reject(new Error("Upload failed."));
         });
-        xhr.addEventListener("error", () => reject(new Error("Upload failed")));
+
+        xhr.addEventListener("error", () => {
+          reject(new Error("Upload failed."));
+        });
+
         xhr.open("PUT", uploadUrl);
         xhr.send(file);
       });
 
+      setProgress(100);
       setStatus("processing");
-      console.log("Mux upload ID:", uploadId);
-
-      // Step 3 — Done
-      setTimeout(() => setStatus("done"), 2000);
-
     } catch (err) {
-      console.error(err);
+      console.error("Upload error:", err);
       setError("Upload failed. Please try again.");
       setStatus("error");
     }
@@ -83,390 +117,134 @@ export default function UploadPage() {
   return (
     <>
       <Navbar />
-      <main
-        style={{
-          paddingTop: "68px",
-          minHeight: "100vh",
-          background: "var(--black)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "720px",
-            margin: "0 auto",
-            padding: "60px 24px",
-          }}
-        >
-          {/* Header */}
-          <div style={{ marginBottom: "48px" }}>
-            <p
-              style={{
-                fontSize: "11px",
-                color: "var(--gold)",
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-                fontWeight: 600,
-                marginBottom: "12px",
-              }}
-            >
-              Creator Studio
-            </p>
-            <h1
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "48px",
-                letterSpacing: "1px",
-                color: "var(--white)",
-                marginBottom: "12px",
-              }}
-            >
-              Upload Video
-            </h1>
-            <p style={{ fontSize: "15px", color: "var(--muted)" }}>
-              Share your content with the WorthCast community.
+
+      <main className="upload-page">
+        <section className="upload-shell">
+          <div className="upload-header">
+            <p className="section-label">Creator Studio</p>
+            <h1 className="upload-title">Upload Video</h1>
+            <p className="upload-copy">
+              Share your sermons, worship, teaching, films, and testimonies with
+              the WorthCast community.
             </p>
           </div>
 
           {status === "done" ? (
-            // Success state
-            <div
-              style={{
-                background: "var(--card)",
-                border: "1px solid var(--border)",
-                borderRadius: "12px",
-                padding: "48px",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "64px",
-                  height: "64px",
-                  background: "var(--gold-dim)",
-                  border: "1px solid var(--gold-border)",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 24px",
-                  fontSize: "28px",
-                }}
-              >
-                ✓
-              </div>
-              <h2
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "32px",
-                  color: "var(--white)",
-                  marginBottom: "12px",
-                }}
-              >
-                Upload Complete
-              </h2>
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "var(--muted)",
-                  marginBottom: "32px",
-                }}
-              >
-                Your video is being processed by Mux. It will be ready
-                to stream shortly.
+            <div className="upload-card upload-success">
+              <div className="upload-success-icon">✓</div>
+              <h2>Upload Complete</h2>
+              <p>
+                Your video is being processed by Mux. It will appear once the
+                webhook saves it to WorthCast.
               </p>
-              <button
-                onClick={() => {
-                  setStatus("idle");
-                  setFile(null);
-                  setTitle("");
-                  setDescription("");
-                  setProgress(0);
-                }}
-                style={{
-                  background: "var(--gold)",
-                  color: "var(--black)",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "12px 28px",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-body)",
-                  cursor: "pointer",
-                }}
-              >
+              <button className="btn btn-primary" onClick={resetForm}>
                 Upload Another
               </button>
             </div>
           ) : (
-            // Upload form
-            <div
-              style={{
-                background: "var(--card)",
-                border: "1px solid var(--border)",
-                borderRadius: "12px",
-                padding: "40px",
-              }}
-            >
-              {/* File drop zone */}
-              <div
-                style={{
-                  border: "2px dashed var(--border)",
-                  borderRadius: "10px",
-                  padding: "48px 24px",
-                  textAlign: "center",
-                  marginBottom: "32px",
-                  background: file ? "rgba(201,168,76,0.04)" : "transparent",
-                  borderColor: file ? "var(--gold)" : "var(--border)",
-                }}
-              >
+            <div className="upload-card">
+              <div className={`upload-dropzone ${file ? "has-file" : ""}`}>
                 {file ? (
-                  <div>
-                    <p
-                      style={{
-                        fontSize: "16px",
-                        color: "var(--white)",
-                        fontWeight: 500,
-                        marginBottom: "8px",
-                      }}
-                    >
-                      {file.name}
-                    </p>
-                    <p style={{ fontSize: "13px", color: "var(--muted)" }}>
+                  <>
+                    <p className="upload-file-name">{file.name}</p>
+                    <p className="upload-file-size">
                       {(file.size / 1024 / 1024).toFixed(1)} MB
                     </p>
                     <button
+                      type="button"
+                      className="upload-remove"
                       onClick={() => setFile(null)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "var(--muted)",
-                        fontSize: "13px",
-                        cursor: "pointer",
-                        marginTop: "12px",
-                        fontFamily: "var(--font-body)",
-                      }}
+                      disabled={isBusy}
                     >
                       Remove
                     </button>
-                  </div>
+                  </>
                 ) : (
-                  <div>
-                    <div
-                      style={{
-                        fontSize: "40px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      🎬
-                    </div>
-                    <p
-                      style={{
-                        fontSize: "15px",
-                        color: "var(--white)",
-                        marginBottom: "8px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Select your video file
-                    </p>
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        color: "var(--muted)",
-                        marginBottom: "20px",
-                      }}
-                    >
-                      MP4, MOV, MKV — up to 10GB
-                    </p>
-                    <label
-                      htmlFor="video-file"
-                      style={{
-                        display: "inline-block",
-                        background: "var(--gold)",
-                        color: "var(--black)",
-                        borderRadius: "6px",
-                        padding: "10px 24px",
-                        fontSize: "14px",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                      }}
-                    >
+                  <>
+                    <div className="upload-drop-icon">🎬</div>
+                    <p className="upload-drop-title">Select your video file</p>
+                    <p className="upload-drop-copy">MP4, MOV, MKV — up to 10GB</p>
+
+                    <label htmlFor="video-file" className="btn btn-primary">
                       Browse Files
                     </label>
+
                     <input
                       id="video-file"
                       type="file"
                       accept="video/*"
                       onChange={handleFileSelect}
-                      style={{ display: "none" }}
+                      hidden
                     />
-                  </div>
+                  </>
                 )}
               </div>
 
-              {/* Title */}
-              <div style={{ marginBottom: "20px" }}>
-                <label
-                  htmlFor="title"
-                  style={{
-                    display: "block",
-                    fontSize: "13px",
-                    color: "var(--muted)",
-                    marginBottom: "8px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Title *
-                </label>
+              <label className="upload-field" htmlFor="title">
+                <span>Title *</span>
                 <input
                   id="title"
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Give your video a compelling title"
-                  style={{
-                    width: "100%",
-                    background: "var(--dark)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "6px",
-                    padding: "11px 14px",
-                    color: "var(--white)",
-                    fontSize: "14px",
-                    fontFamily: "var(--font-body)",
-                    outline: "none",
-                  }}
+                  disabled={isBusy}
                 />
-              </div>
+              </label>
 
-              {/* Description */}
-              <div style={{ marginBottom: "32px" }}>
-                <label
-                  htmlFor="description"
-                  style={{
-                    display: "block",
-                    fontSize: "13px",
-                    color: "var(--muted)",
-                    marginBottom: "8px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Description
-                </label>
+              <label className="upload-field" htmlFor="description">
+                <span>Description</span>
                 <textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Tell viewers what this video is about"
                   rows={4}
-                  style={{
-                    width: "100%",
-                    background: "var(--dark)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "6px",
-                    padding: "11px 14px",
-                    color: "var(--white)",
-                    fontSize: "14px",
-                    fontFamily: "var(--font-body)",
-                    outline: "none",
-                    resize: "vertical",
-                  }}
+                  disabled={isBusy}
                 />
-              </div>
+              </label>
 
-              {/* Progress bar */}
               {status === "uploading" && (
-                <div style={{ marginBottom: "24px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "13px",
-                      color: "var(--muted)",
-                      marginBottom: "8px",
-                    }}
-                  >
+                <div className="upload-progress">
+                  <div className="upload-progress-head">
                     <span>Uploading…</span>
                     <span>{progress}%</span>
                   </div>
-                  <div
-                    style={{
-                      height: "4px",
-                      background: "var(--border)",
-                      borderRadius: "2px",
-                      overflow: "hidden",
-                    }}
-                  >
+                  <div className="upload-progress-track">
                     <div
-                      style={{
-                        height: "100%",
-                        width: `${progress}%`,
-                        background: "var(--gold)",
-                        borderRadius: "2px",
-                        transition: "width 0.3s ease",
-                      }}
+                      className="upload-progress-bar"
+                      style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>
               )}
 
               {status === "processing" && (
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color: "var(--gold)",
-                    marginBottom: "24px",
-                  }}
-                >
-                  ✓ Upload complete — Mux is processing your video…
+                <p className="upload-message success">
+                  ✓ Upload complete — Mux is processing your video. It will show
+                  on WorthCast after the webhook finishes.
                 </p>
               )}
 
-              {/* Error */}
-              {error && (
-                <p
-                  style={{
-                    fontSize: "13px",
-                    color: "var(--red)",
-                    marginBottom: "20px",
-                  }}
-                >
-                  {error}
-                </p>
-              )}
+              {error && <p className="upload-message error">{error}</p>}
 
-              {/* Submit */}
               <button
+                type="button"
+                className="btn btn-primary upload-submit"
                 onClick={handleUpload}
-                disabled={status !== "idle" && status !== "error"}
-                style={{
-                  width: "100%",
-                  background: "var(--gold)",
-                  color: "var(--black)",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "14px",
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-body)",
-                  cursor:
-                    status !== "idle" && status !== "error"
-                      ? "not-allowed"
-                      : "pointer",
-                  opacity:
-                    status !== "idle" && status !== "error" ? 0.7 : 1,
-                }}
+                disabled={isBusy}
               >
                 {status === "requesting"
                   ? "Preparing upload…"
                   : status === "uploading"
-                  ? `Uploading ${progress}%`
-                  : status === "processing"
-                  ? "Processing…"
-                  : "Upload Video"}
+                    ? `Uploading ${progress}%`
+                    : status === "processing"
+                      ? "Processing…"
+                      : "Upload Video"}
               </button>
             </div>
           )}
-        </div>
+        </section>
       </main>
     </>
   );
