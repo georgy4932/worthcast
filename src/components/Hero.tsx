@@ -1,4 +1,28 @@
-export default function Hero() {
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+async function getLatestVideo() {
+  const { data } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("status", "ready")
+    .eq("visibility", "public")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  return data || null;
+}
+
+export default async function Hero() {
+  const video = await getLatestVideo();
+  const thumb = video?.mux_playback_id
+    ? `https://image.mux.com/${video.mux_playback_id}/thumbnail.jpg?time=0`
+    : null;
+
   return (
     <section
       aria-labelledby="hero-heading"
@@ -85,7 +109,6 @@ export default function Hero() {
 
         {/* Left */}
         <div className="hero-left">
-
           <div className="hero-badge">
             <span
               aria-hidden="true"
@@ -176,7 +199,6 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* Stats */}
           <div
             className="hero-stats"
             aria-label="WorthCast platform highlights"
@@ -215,9 +237,10 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right — decorative, hidden on mobile */}
+        {/* Right — real video or placeholder */}
         <div aria-hidden="true" className="hero-right">
-          <div
+          <a
+            href={video ? `/watch/${video.id}` : "/browse"}
             style={{
               width: "100%",
               background: "var(--card)",
@@ -225,35 +248,40 @@ export default function Hero() {
               overflow: "hidden",
               border: "1px solid var(--border)",
               boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
+              textDecoration: "none",
+              color: "inherit",
+              display: "block",
             }}
           >
-            {/* Cinematic placeholder */}
+            {/* Thumbnail */}
             <div
               style={{
                 width: "100%",
                 aspectRatio: "16/10",
-                background:
-                  "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
+                background: thumb
+                  ? `url(${thumb}) center/cover no-repeat`
+                  : "linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
               }}
             >
-              {/* Grid pattern */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 40px,
-                    rgba(201,168,76,0.03) 40px,
-                    rgba(201,168,76,0.03) 41px
-                  )`,
-                }}
-              />
+              {!thumb && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundImage: `repeating-linear-gradient(
+                      45deg,
+                      transparent,
+                      transparent 40px,
+                      rgba(201,168,76,0.03) 40px,
+                      rgba(201,168,76,0.03) 41px
+                    )`,
+                  }}
+                />
+              )}
               <div
                 style={{
                   width: "72px",
@@ -297,21 +325,17 @@ export default function Hero() {
                   marginBottom: "8px",
                 }}
               >
-                Values-aligned content for creators and viewers who care.
+                {video ? video.title : "Values-aligned content for creators and viewers who care."}
               </p>
-              <a
-                href="/browse"
-                style={{
-                  fontSize: "13px",
-                  color: "var(--gold)",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                }}
-              >
-                Browse all videos →
-              </a>
+              <p style={{
+                fontSize: "13px",
+                color: "var(--gold)",
+                fontWeight: 500,
+              }}>
+                {video ? "Watch now →" : "Browse all videos →"}
+              </p>
             </div>
-          </div>
+          </a>
         </div>
 
       </div>
