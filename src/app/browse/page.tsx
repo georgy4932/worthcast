@@ -159,11 +159,11 @@ export default async function BrowsePage() {
                         color: "inherit",
                       }}
                     >
-                      {/* Thumbnail */}
+                                            {/* Thumbnail */}
                       <div style={{
                         aspectRatio: "16/9",
-                        background: video.thumbnail_url
-                          ? `url(${video.thumbnail_url}) center/cover`
+                        background: video.mux_playback_id
+                          ? `url(https://image.mux.com/${video.mux_playback_id}/thumbnail.jpg?time=0) center/cover no-repeat`
                           : getThumbColor(index),
                         display: "flex",
                         alignItems: "center",
@@ -171,7 +171,7 @@ export default async function BrowsePage() {
                         position: "relative",
                         fontSize: "32px",
                       }}>
-                        {!video.thumbnail_url && "🎬"}
+                        {!video.mux_playback_id && "🎬"}
                         {duration && (
                           <span style={{
                             position: "absolute",
