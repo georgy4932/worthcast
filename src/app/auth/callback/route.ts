@@ -32,16 +32,8 @@ export async function GET(request: NextRequest) {
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error) {
-      return response;
-    }
-
-    console.error("Auth callback error:", error);
+    if (!error) return response;
   }
 
-  // Auth failed — redirect to signin with error
-  const signinUrl = new URL("/signin", origin);
-  signinUrl.searchParams.set("error", "auth_failed");
-  return NextResponse.redirect(signinUrl);
+  return NextResponse.redirect(`${origin}/signin`);
 }
