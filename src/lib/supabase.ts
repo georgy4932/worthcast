@@ -5,7 +5,6 @@ export const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Database types
 export type Profile = {
   id: string;
   username: string;
@@ -19,7 +18,7 @@ export type Profile = {
 
 export type Video = {
   id: string;
-  creator_id: string;
+  creator_id: string | null;
   title: string;
   description: string | null;
   category_id: number | null;
