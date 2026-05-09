@@ -10,21 +10,28 @@ const mux = new Mux({
 
 type CreateUploadBody = {
   title?: string;
-  description?: string;
-  categoryId?: string;
+  description?: string | null;
+  categoryId?: string | null;
 };
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.MUX_TOKEN_ID || !process.env.MUX_TOKEN_SECRET) {
+      return NextResponse.json(
+        { error: "Mux environment variables are missing." },
+        { status: 500 }
+      );
+    }
+
     const body = (await request.json()) as CreateUploadBody;
 
     const title = body.title?.trim();
-    const description = body.description?.trim() || "";
+    const description = body.description?.trim() || null;
     const categoryId = body.categoryId?.trim() || null;
 
     if (!title) {
       return NextResponse.json(
-        { error: "Title is required" },
+        { error: "Title is required." },
         { status: 400 }
       );
     }
@@ -50,7 +57,7 @@ export async function POST(request: Request) {
     console.error("Mux upload error:", error);
 
     return NextResponse.json(
-      { error: "Failed to create upload" },
+      { error: "Failed to create upload." },
       { status: 500 }
     );
   }
