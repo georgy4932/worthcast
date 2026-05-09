@@ -20,13 +20,13 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "WorthCast — Stream What Matters",
+  title: "WorthCast — Christian Streaming Platform",
   description:
-    "WorthCast is the open streaming platform for values-aligned creators and viewers.",
+    "WorthCast is the Christian streaming platform for viewers, families, churches, and ministries. Watch sermons, worship, Bible teaching, Christian films, testimonies, and devotionals.",
   openGraph: {
-    title: "WorthCast — Stream What Matters",
+    title: "WorthCast — Christian Streaming Platform",
     description:
-      "The open streaming platform for creators and viewers who believe the content you watch shapes the person you become.",
+      "Faith-filled streaming for viewers, families, churches, and ministries. Sermons, worship, Bible teaching, Christian films, and devotionals — curated to the standard your faith deserves.",
     type: "website",
   },
 };
