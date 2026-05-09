@@ -14,7 +14,7 @@ const supabase = createClient(
 
 type MuxPassthrough = {
   title?: string;
-  description?: string;
+  description?: string | null;
   categoryId?: string | null;
 };
 
@@ -30,35 +30,35 @@ function parsePassthrough(passthrough?: string | null): MuxPassthrough {
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text();
+    if (!process.env.MUX_WEBHOOK_SECRET) {
+      return NextResponse.json(
+        { error: "Mux webhook secret is missing." },
+        { status: 500 }
+      );
+    }
 
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json(
+        { error: "Supabase service role key is missing." },
+        { status: 500 }
+      );
+    }
+
+    const rawBody = await request.text();
     const signature = request.headers.get("mux-signature");
 
     if (!signature) {
       return NextResponse.json(
-        { error: "Missing Mux signature" },
+        { error: "Missing Mux signature." },
         { status: 400 }
       );
     }
 
-    let event;
-
-    try {
-      event = mux.webhooks.unwrap(
-        rawBody,
-        {
-          "mux-signature": signature,
-        },
-        process.env.MUX_WEBHOOK_SECRET!
-      );
-    } catch (error) {
-      console.error("Invalid Mux webhook signature:", error);
-
-      return NextResponse.json(
-        { error: "Invalid webhook signature" },
-        { status: 400 }
-      );
-    }
+    const event = mux.webhooks.unwrap(
+      rawBody,
+      { "mux-signature": signature },
+      process.env.MUX_WEBHOOK_SECRET
+    );
 
     if (event.type !== "video.asset.ready") {
       return NextResponse.json({ received: true });
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
     if (!playbackId) {
       return NextResponse.json(
-        { error: "No playback ID" },
+        { error: "No playback ID found." },
         { status: 400 }
       );
     }
@@ -102,17 +102,17 @@ export async function POST(request: Request) {
       console.error("Supabase upsert error:", error);
 
       return NextResponse.json(
-        { error: "Failed to save video" },
+        { error: "Failed to save video." },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("Mux webhook error:", error);
 
     return NextResponse.json(
-      { error: "Webhook failed" },
+      { error: "Webhook failed." },
       { status: 500 }
     );
   }
