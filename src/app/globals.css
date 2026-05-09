@@ -1539,3 +1539,125 @@ svg {
     align-items: stretch;
   }
 }
+
+/* ---------- Categories Directory Page ---------- */
+
+.categories-page {
+  min-height: 100vh;
+  background: var(--black);
+}
+
+.categories-hero {
+  padding: 88px 0 68px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(201,168,76,.08), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,.035), transparent 26%),
+    linear-gradient(135deg, #080808 0%, #111111 55%, #080808 100%);
+}
+
+.categories-title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 82px);
+  line-height: .95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.categories-copy {
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.category-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.category-directory-card {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.category-directory-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,.35);
+  box-shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+
+.category-directory-art {
+  height: 92px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+}
+
+.category-directory-art span {
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.45));
+}
+
+.category-directory-info {
+  padding: 22px;
+}
+
+.category-directory-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.category-directory-head h2 {
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.category-directory-head span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.category-directory-info p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+  .category-directory-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .categories-hero {
+    padding: 72px 0 56px;
+  }
+
+  .category-directory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .category-directory-grid {
+    grid-template-columns: 1fr;
+  }
+}
