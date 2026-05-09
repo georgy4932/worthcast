@@ -3,6 +3,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const protectedRoutes = ["/upload", "/studio"];
 
+type CookieToSet = {
+  name: string;
+  value: string;
+  options?: Record<string, unknown>;
+};
+
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
@@ -15,7 +21,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
 
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
             response.cookies.set(name, value, options);
@@ -36,6 +42,7 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute && !user) {
     const redirectUrl = new URL("/signin", request.url);
     redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+
     return NextResponse.redirect(redirectUrl);
   }
 
