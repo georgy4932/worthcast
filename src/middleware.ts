@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+
+const protectedRoutes = ["/upload", "/studio"];
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
@@ -13,7 +14,8 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
+
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
             response.cookies.set(name, value, options);
@@ -23,22 +25,18 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (request.nextUrl.pathname.startsWith("/upload")) {
-    if (!user) {
-      const redirectUrl = new URL("/signin", request.url);
-      redirectUrl.searchParams.set("redirect", "/upload");
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
 
-  if (request.nextUrl.pathname.startsWith("/studio")) {
-    if (!user) {
-      const redirectUrl = new URL("/signin", request.url);
-      redirectUrl.searchParams.set("redirect", "/studio");
-      return NextResponse.redirect(redirectUrl);
-    }
+  if (isProtectedRoute && !user) {
+    const redirectUrl = new URL("/signin", request.url);
+    redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
   return response;
