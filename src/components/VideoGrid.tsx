@@ -16,8 +16,13 @@ function formatDuration(seconds: number | null) {
 }
 
 function formatViews(count: number) {
-  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M views`;
-  if (count >= 1_000) return `${(count / 1_000).toFixed(0)}K views`;
+  if (count >= 1_000_000) {
+    return `${(count / 1_000_000).toFixed(1)}M views`;
+  }
+
+  if (count >= 1_000) {
+    return `${(count / 1_000).toFixed(0)}K views`;
+  }
 
   return `${count} views`;
 }
@@ -47,6 +52,7 @@ export default async function VideoGrid() {
       <div className="section-header">
         <div>
           <p className="section-label">↑ Rising Fast</p>
+
           <h2 id="trending-heading" className="section-title">
             Trending Videos
           </h2>
@@ -68,29 +74,36 @@ export default async function VideoGrid() {
         </div>
       ) : (
         <ul className="video-grid" role="list">
-          {videos.map((video, index) => (
-            <li key={video.id}>
-              <VideoCard
-                href={`/watch/${video.id}`}
-                title={video.title}
-                category="WorthCast"
-                author="WorthCast Creator"
-                views={formatViews(video.view_count || 0)}
-                duration={formatDuration(video.duration)}
-                emoji="🎬"
-                theme={
-                  [
-                    "thumb-faith",
-                    "thumb-documentary",
-                    "thumb-education",
-                    "thumb-wellbeing",
-                  ][index % 4]
-                }
-                avatar="W"
-                avatarClass="avatar--gold"
-              />
-            </li>
-          ))}
+          {videos.map((video, index) => {
+            const thumbnailUrl = video.mux_playback_id
+              ? `https://image.mux.com/${video.mux_playback_id}/thumbnail.jpg?time=0`
+              : null;
+
+            return (
+              <li key={video.id}>
+                <VideoCard
+                  href={`/watch/${video.id}`}
+                  title={video.title}
+                  category="WorthCast"
+                  author="WorthCast Creator"
+                  views={formatViews(video.view_count || 0)}
+                  duration={formatDuration(video.duration)}
+                  emoji="🎬"
+                  theme={
+                    [
+                      "thumb-faith",
+                      "thumb-documentary",
+                      "thumb-education",
+                      "thumb-wellbeing",
+                    ][index % 4]
+                  }
+                  avatar="W"
+                  avatarClass="avatar--gold"
+                  thumbnailUrl={thumbnailUrl}
+                />
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
