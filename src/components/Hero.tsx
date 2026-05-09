@@ -68,9 +68,6 @@ export default function Hero() {
           .hero-left { padding: 40px 24px 60px !important; }
           .hero-stats { grid-template-columns: 1fr 1fr; gap: 20px; }
         }
-        @media (max-width: 480px) {
-          .hero-badge { white-space: normal; font-size: 10px; }
-        }
       `}</style>
 
       <div
@@ -163,7 +160,7 @@ export default function Hero() {
               Explore WorthCast
             </a>
             <a
-              href="/about#trailer"
+              href="/join"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -175,12 +172,11 @@ export default function Hero() {
                 whiteSpace: "nowrap",
               }}
             >
-              Watch Trailer
+              Start Free →
             </a>
           </div>
 
           {/* Stats */}
-          {/* [DATA: replace with live counts once platform launches] */}
           <div
             className="hero-stats"
             aria-label="WorthCast platform highlights"
@@ -231,6 +227,7 @@ export default function Hero() {
               boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
             }}
           >
+            {/* Cinematic placeholder */}
             <div
               style={{
                 width: "100%",
@@ -240,8 +237,23 @@ export default function Hero() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "relative",
               }}
             >
+              {/* Grid pattern */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: `repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(201,168,76,0.03) 40px,
+                    rgba(201,168,76,0.03) 41px
+                  )`,
+                }}
+              />
               <div
                 style={{
                   width: "72px",
@@ -251,6 +263,8 @@ export default function Hero() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative",
+                  zIndex: 2,
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24"
@@ -259,20 +273,43 @@ export default function Hero() {
                 </svg>
               </div>
             </div>
+
+            {/* Card info */}
             <div style={{ padding: "20px 24px" }}>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "var(--gold)",
+                  textTransform: "uppercase",
+                  letterSpacing: "1.5px",
+                  fontWeight: 600,
+                  marginBottom: "8px",
+                }}
+              >
+                ✦ Now Streaming
+              </p>
               <p
                 style={{
                   fontFamily: "var(--font-serif)",
                   fontSize: "18px",
                   color: "var(--white)",
                   lineHeight: 1.3,
+                  marginBottom: "8px",
                 }}
               >
-                The Architecture of Virtue: How Ancient Wisdom Shapes Modern Life
+                Values-aligned content for creators and viewers who care.
               </p>
-              <p style={{ fontSize: "13px", color: "var(--muted)", marginTop: "8px" }}>
-                24.8K watching · 1h 24m
-              </p>
+              <a
+                href="/browse"
+                style={{
+                  fontSize: "13px",
+                  color: "var(--gold)",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
+              >
+                Browse all videos →
+              </a>
             </div>
           </div>
         </div>
