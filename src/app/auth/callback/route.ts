@@ -18,7 +18,11 @@ export async function GET(request: NextRequest) {
           getAll() {
             return request.cookies.getAll();
           },
-          setAll(cookiesToSet: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
+          setAll(cookiesToSet: Array<{
+            name: string;
+            value: string;
+            options?: Record<string, unknown>;
+          }>) {
             cookiesToSet.forEach(({ name, value, options }) => {
               response.cookies.set(name, value, options);
             });
@@ -28,8 +32,16 @@ export async function GET(request: NextRequest) {
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return response;
+
+    if (!error) {
+      return response;
+    }
+
+    console.error("Auth callback error:", error);
   }
 
-  return NextResponse.redirect(`${origin}/signin?error=auth`);
+  // Auth failed — redirect to signin with error
+  const signinUrl = new URL("/signin", origin);
+  signinUrl.searchParams.set("error", "auth_failed");
+  return NextResponse.redirect(signinUrl);
 }
