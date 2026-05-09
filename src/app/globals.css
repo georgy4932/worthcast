@@ -2569,3 +2569,52 @@ svg {
 .not-found-link:hover {
   opacity: .8;
 }
+
+/* ---------- Content Rail ---------- */
+
+.content-rail {
+  padding: 48px 80px;
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+
+.content-rail-header {
+  margin-bottom: 24px;
+}
+
+.content-rail-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 1px;
+  line-height: 1;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.content-rail-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .content-rail-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .content-rail {
+    padding: 40px 24px;
+  }
+
+  .content-rail-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .content-rail-grid {
+    grid-template-columns: 1fr;
+  }
+}
