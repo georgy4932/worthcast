@@ -17,10 +17,8 @@ type Video = {
 
 function formatDuration(seconds: number | null) {
   if (!seconds) return null;
-
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
@@ -48,7 +46,9 @@ export default function SearchPage() {
   const [searched, setSearched] = useState(false);
 
   const search = useCallback(async (q: string) => {
-    if (!q.trim()) {
+    const cleanQuery = q.trim();
+
+    if (!cleanQuery) {
       setResults([]);
       setSearched(false);
       return;
@@ -62,7 +62,7 @@ export default function SearchPage() {
       .select("*")
       .eq("status", "ready")
       .eq("visibility", "public")
-      .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
+      .or(`title.ilike.%${cleanQuery}%,description.ilike.%${cleanQuery}%`)
       .order("created_at", { ascending: false })
       .limit(24);
 
@@ -71,14 +71,36 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlQuery = params.get("q") || "";
+
+    if (urlQuery) {
+      setQuery(urlQuery);
+      search(urlQuery);
+    }
+  }, [search]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       if (query.trim().length >= 2) {
         search(query);
+      }
+
+      if (!query.trim()) {
+        setResults([]);
+        setSearched(false);
       }
     }, 400);
 
     return () => clearTimeout(timer);
   }, [query, search]);
+
+  function clearSearch() {
+    setQuery("");
+    setResults([]);
+    setSearched(false);
+    window.history.replaceState({}, "", "/search");
+  }
 
   return (
     <>
@@ -114,11 +136,7 @@ export default function SearchPage() {
               />
 
               {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  className="search-clear"
-                >
+                <button type="button" onClick={clearSearch} className="search-clear">
                   ✕
                 </button>
               )}
@@ -136,18 +154,13 @@ export default function SearchPage() {
 
         <section className="page-section">
           <div className="container">
-
             {!query && (
               <>
                 <p className="section-label">Popular Searches</p>
 
                 <div className="search-suggestions">
                   {suggestions.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setQuery(s)}
-                      className="search-pill"
-                    >
+                    <button key={s} type="button" onClick={() => setQuery(s)} className="search-pill">
                       {s}
                     </button>
                   ))}
@@ -164,13 +177,8 @@ export default function SearchPage() {
             {searched && !loading && results.length === 0 && (
               <div className="search-empty-card">
                 <div className="search-empty-icon">🔍</div>
-
                 <h2>No Results Found</h2>
-
-                <p>
-                  Try a different search term or browse by category.
-                </p>
-
+                <p>Try a different search term or browse by category.</p>
                 <a href="/categories" className="btn btn-gold">
                   Browse Categories
                 </a>
@@ -181,12 +189,11 @@ export default function SearchPage() {
               <ul className="search-grid" role="list">
                 {results.map((video, index) => {
                   const duration = formatDuration(video.duration);
-
                   const thumb = video.mux_playback_id
                     ? `https://image.mux.com/${video.mux_playback_id}/thumbnail.jpg?time=0`
                     : null;
 
-                  const gradients = [
+                  const themes = [
                     "thumb-faith",
                     "thumb-documentary",
                     "thumb-education",
@@ -195,36 +202,24 @@ export default function SearchPage() {
 
                   return (
                     <li key={video.id}>
-                      <a
-                        href={`/watch/${video.id}`}
-                        className="video-card"
-                      >
+                      <a href={`/watch/${video.id}`} className="video-card">
                         <div className="video-thumb">
                           {thumb ? (
                             <div
                               className="thumb-bg"
-                              style={{
-                                background: `url(${thumb}) center/cover no-repeat`,
-                              }}
+                              style={{ background: `url(${thumb}) center/cover no-repeat` }}
                             />
                           ) : (
-                            <div className={`thumb-bg ${gradients[index % gradients.length]}`}>
+                            <div className={`thumb-bg ${themes[index % themes.length]}`}>
                               🎬
                             </div>
                           )}
 
-                          {duration && (
-                            <span className="thumb-duration">
-                              {duration}
-                            </span>
-                          )}
+                          {duration && <span className="thumb-duration">{duration}</span>}
                         </div>
 
                         <div className="video-info">
-                          <h3 className="video-title">
-                            {video.title}
-                          </h3>
-
+                          <h3 className="video-title">{video.title}</h3>
                           <div className="video-meta">
                             <span>{video.view_count || 0} views</span>
                           </div>
