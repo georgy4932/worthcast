@@ -1888,3 +1888,152 @@ svg {
     flex-direction: column;
   }
 }
+
+/* ---------- Auth Page ---------- */
+
+.auth-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(201,168,76,.08), transparent 34%),
+    var(--black);
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+}
+
+.auth-shell {
+  width: min(100%, 430px);
+}
+
+.auth-logo {
+  margin-bottom: 44px;
+}
+
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 42px;
+}
+
+.auth-card h1 {
+  font-family: var(--font-display);
+  font-size: 38px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.auth-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.google-btn {
+  width: 100%;
+  background: #fff;
+  color: #161616;
+  border: 0;
+  border-radius: 8px;
+  padding: 13px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.auth-divider span {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-divider p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.auth-field {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.auth-field span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.auth-field input {
+  width: 100%;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--white);
+  font-size: 14px;
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.auth-field input:focus {
+  border-color: var(--gold);
+}
+
+.auth-message {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.auth-message.error {
+  color: var(--red);
+}
+
+.auth-message.success {
+  color: var(--gold);
+}
+
+.auth-submit {
+  width: 100%;
+  margin: 6px 0 22px;
+}
+
+.auth-submit:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.auth-toggle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.auth-toggle button {
+  background: none;
+  border: 0;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    padding: 32px 24px;
+  }
+}
