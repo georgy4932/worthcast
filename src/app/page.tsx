@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Ticker from "@/components/Ticker";
-import ContentRail from "@/components/ContentRail";
+import VideoGrid from "@/components/VideoGrid";
 import Categories from "@/components/Categories";
 import WhyWorthCast from "@/components/WhyWorthCast";
 import CTABanner from "@/components/CTABanner";
@@ -14,12 +14,7 @@ export default function Home() {
       <main>
         <Hero />
         <Ticker />
-        <ContentRail
-          title="Recently Added"
-          label="New on WorthCast"
-          browseHref="/browse"
-          limit={6}
-        />
+        <VideoGrid />
         <Categories />
         <WhyWorthCast />
         <CTABanner />
