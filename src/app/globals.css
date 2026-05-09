@@ -1661,3 +1661,157 @@ svg {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Search Page ---------- */
+
+.search-page {
+  min-height: 100vh;
+  background: var(--black);
+}
+
+.search-hero {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--dark);
+}
+
+.search-input-wrap {
+  position: relative;
+  max-width: 760px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: 62px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 56px;
+  color: var(--white);
+  font-size: 18px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+
+.search-input:focus {
+  border-color: var(--gold);
+  background: #191919;
+}
+
+.search-input::placeholder {
+  color: var(--muted);
+}
+
+.search-clear {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.search-stats {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+
+.search-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.search-empty {
+  padding: 90px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+.search-empty-card {
+  text-align: center;
+  padding: 80px 28px;
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+}
+
+.search-empty-icon {
+  font-size: 48px;
+  margin-bottom: 18px;
+}
+
+.search-empty-card h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.search-empty-card p {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+@media (max-width: 1100px) {
+  .search-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .search-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .search-hero {
+    padding: 48px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-input {
+    height: 56px;
+    font-size: 16px;
+  }
+}
