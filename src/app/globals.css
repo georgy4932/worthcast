@@ -932,6 +932,17 @@ svg {
   line-height: 1.75;
 }
 
+.footer-verse {
+  font-style: italic;
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 320px;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
 .footer-col h4 {
   color: var(--muted);
   font-size: 12px;
