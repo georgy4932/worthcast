@@ -1,10 +1,10 @@
- const categories = [
-  { name: "Faith", icon: "✝️", count: "4,210 videos", href: "/categories/faith" },
-  { name: "Film", icon: "🎬", count: "1,830 videos", href: "/categories/film" },
-  { name: "Education", icon: "📚", count: "3,540 videos", href: "/categories/education" },
-  { name: "Family", icon: "👨‍👩‍👧", count: "2,100 videos", href: "/categories/family" },
-  { name: "Culture", icon: "🌍", count: "1,290 videos", href: "/categories/culture" },
-  { name: "Wellbeing", icon: "🩺", count: "980 videos", href: "/categories/wellbeing" },
+const categories = [
+  { name: "Faith", icon: "✝️", href: "/categories/faith" },
+  { name: "Film", icon: "🎬", href: "/categories/film" },
+  { name: "Education", icon: "📚", href: "/categories/education" },
+  { name: "Family", icon: "👨‍👩‍👧", href: "/categories/family" },
+  { name: "Culture", icon: "🌍", href: "/categories/culture" },
+  { name: "Wellbeing", icon: "🩺", href: "/categories/wellbeing" },
 ];
 
 export default function Categories() {
@@ -18,55 +18,47 @@ export default function Categories() {
         borderBottom: "1px solid var(--border)",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          marginBottom: "40px",
-          flexWrap: "wrap",
-          gap: "24px",
-        }}
-      >
-        <div>
-          <p
-            aria-hidden="true"
-            style={{
-              fontSize: "11px",
-              color: "var(--gold)",
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              fontWeight: 600,
-              marginBottom: "8px",
-            }}
-          >
-            Explore
-          </p>
-          <h2
-            id="categories-heading"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "42px",
-              letterSpacing: "1px",
-              lineHeight: 1,
-              color: "var(--white)",
-            }}
-          >
-            Browse by Category
-          </h2>
-        </div>
+      <style>{`
+        .categories-grid {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 16px;
+        }
+        @media (max-width: 1000px) {
+          .categories-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 600px) {
+          .categories-grid { grid-template-columns: repeat(2, 1fr); }
+          .categories-section { padding: 60px 24px !important; }
+        }
+      `}</style>
+
+      <div style={{ marginBottom: "40px" }}>
+        <p style={{
+          fontSize: "11px",
+          color: "var(--gold)",
+          textTransform: "uppercase",
+          letterSpacing: "2px",
+          fontWeight: 600,
+          marginBottom: "8px",
+        }}>
+          Explore
+        </p>
+        <h2
+          id="categories-heading"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "42px",
+            letterSpacing: "1px",
+            lineHeight: 1,
+            color: "var(--white)",
+          }}
+        >
+          Browse by Category
+        </h2>
       </div>
 
-      {/* [DATA: categories and counts from CMS] */}
-      <ul
-        role="list"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(6,1fr)",
-          gap: "16px",
-          listStyle: "none",
-        }}
-      >
+      <ul className="categories-grid" role="list" style={{ listStyle: "none" }}>
         {categories.map((cat) => (
           <li key={cat.href}>
             <a
@@ -93,25 +85,13 @@ export default function Categories() {
               >
                 {cat.icon}
               </span>
-              <span
-                style={{
-                  display: "block",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "var(--white)",
-                  marginBottom: "4px",
-                }}
-              >
+              <span style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: 600,
+                color: "var(--white)",
+              }}>
                 {cat.name}
-              </span>
-              <span
-                style={{
-                  display: "block",
-                  fontSize: "11px",
-                  color: "var(--muted)",
-                }}
-              >
-                {cat.count}
               </span>
             </a>
           </li>
