@@ -618,6 +618,21 @@ svg {
   font-weight: 600;
 }
 
+/* ---------- Mux Player ---------- */
+
+.mux-player-shell {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.mux-player-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
 /* ---------- Video cards ---------- */
 
 .video-grid {
