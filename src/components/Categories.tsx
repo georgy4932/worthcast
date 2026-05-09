@@ -16,89 +16,35 @@ const categories = [
 export default function Categories() {
   return (
     <section
+      className="page-section section-bg-dark"
       aria-labelledby="categories-heading"
-      style={{
-        padding: "80px",
-        background: "var(--dark)",
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
-      }}
     >
-      <style>{`
-        .categories-grid {
-          display: grid;
-          grid-template-columns: repeat(6, 1fr);
-          gap: 16px;
-        }
-        @media (max-width: 1000px) {
-          .categories-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        @media (max-width: 600px) {
-          .categories-grid { grid-template-columns: repeat(3, 1fr); }
-          .categories-section { padding: 60px 24px !important; }
-        }
-      `}</style>
+      <div className="section-header">
+        <div>
+          <p className="section-label">Browse by Category</p>
 
-      <div style={{ marginBottom: "40px" }}>
-        <p style={{
-          fontSize: "11px",
-          color: "var(--gold)",
-          textTransform: "uppercase",
-          letterSpacing: "2px",
-          fontWeight: 600,
-          marginBottom: "8px",
-        }}>
-          Browse by Category
-        </p>
-        <h2
-          id="categories-heading"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "42px",
-            letterSpacing: "1px",
-            lineHeight: 1,
-            color: "var(--white)",
-          }}
-        >
-          What Are You Looking For?
-        </h2>
+          <h2 id="categories-heading" className="section-title">
+            What Are You Looking For?
+          </h2>
+        </div>
       </div>
 
-      <ul className="categories-grid" role="list" style={{ listStyle: "none" }}>
-        {categories.map((cat) => (
-          <li key={cat.href}>
+      <ul className="categories-grid" role="list">
+        {categories.map((category) => (
+          <li key={category.href}>
             <a
-              href={cat.href}
-              style={{
-                display: "block",
-                background: "var(--card)",
-                border: "1px solid var(--border)",
-                borderRadius: "10px",
-                padding: "20px 16px",
-                textAlign: "center",
-                textDecoration: "none",
-                color: "inherit",
-              }}
+              href={category.href}
+              className="category-card"
             >
               <span
                 aria-hidden="true"
-                style={{
-                  fontSize: "24px",
-                  display: "block",
-                  marginBottom: "8px",
-                  lineHeight: 1,
-                }}
+                className="cat-icon"
               >
-                {cat.icon}
+                {category.icon}
               </span>
-              <span style={{
-                display: "block",
-                fontSize: "12px",
-                fontWeight: 600,
-                color: "var(--white)",
-                lineHeight: 1.3,
-              }}>
-                {cat.name}
+
+              <span className="cat-name">
+                {category.name}
               </span>
             </a>
           </li>
