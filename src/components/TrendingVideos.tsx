@@ -1,4 +1,4 @@
- const videos = [
+const videos = [
   {
     id: "silence-spiritual-practice",
     title: "Why Silence Is the Most Powerful Spiritual Practice",
@@ -51,186 +51,59 @@
 
 export default function TrendingVideos() {
   return (
-    <section
-      aria-labelledby="trending-heading"
-      style={{
-        padding: "80px",
-        background: "var(--black)",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          marginBottom: "40px",
-          gap: "24px",
-          flexWrap: "wrap",
-        }}
-      >
+    <section className="page-section" aria-labelledby="trending-heading">
+      <div className="section-header">
         <div>
-          <p
-            aria-hidden="true"
-            style={{
-              fontSize: "11px",
-              color: "var(--gold)",
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              fontWeight: 600,
-              marginBottom: "8px",
-            }}
-          >
+          <p className="section-label" aria-hidden="true">
             ↑ Rising Fast
           </p>
-          <h2
-            id="trending-heading"
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "42px",
-              letterSpacing: "1px",
-              lineHeight: 1,
-              color: "var(--white)",
-            }}
-          >
+          <h2 id="trending-heading" className="section-title">
             Trending Videos
           </h2>
         </div>
-        <a
-          href="/browse?sort=trending"
-          style={{
-            color: "var(--gold)",
-            textDecoration: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            whiteSpace: "nowrap",
-          }}
-        >
+
+        <a href="/browse?sort=trending" className="see-all">
           See all trending →
         </a>
       </div>
 
-      {/* Grid */}
-      {/* [DATA: replace with real videos from API] */}
-      <ul
-        role="list"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: "20px",
-          listStyle: "none",
-        }}
-      >
+      <ul className="video-grid" role="list">
         {videos.map((video) => (
           <li key={video.id}>
             <a
               href={`/watch/${video.id}`}
+              className="video-card"
               aria-label={`${video.title}, ${video.duration}, ${video.views}`}
-              style={{
-                display: "block",
-                background: "var(--card)",
-                borderRadius: "10px",
-                overflow: "hidden",
-                border: "1px solid var(--border)",
-                textDecoration: "none",
-                color: "inherit",
-              }}
             >
-              {/* Thumbnail */}
-              <div
-                style={{
-                  aspectRatio: "16/9",
-                  background: video.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "32px",
-                  position: "relative",
-                }}
-              >
-                {video.emoji}
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: "8px",
-                    right: "8px",
-                    background: "rgba(0,0,0,0.8)",
-                    color: "#fff",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    padding: "2px 7px",
-                    borderRadius: "3px",
-                  }}
+              <div className="video-thumb">
+                <div
+                  className="thumb-bg"
+                  style={{ background: video.bg }}
+                  aria-hidden="true"
                 >
-                  {video.duration}
-                </span>
+                  {video.emoji}
+                </div>
+
+                <span className="thumb-duration">{video.duration}</span>
               </div>
 
-              {/* Info */}
-              <div style={{ padding: "14px 16px 16px" }}>
-                <p
-                  style={{
-                    fontSize: "10px",
-                    color: "var(--gold)",
-                    textTransform: "uppercase",
-                    letterSpacing: "1.5px",
-                    fontWeight: 600,
-                    marginBottom: "5px",
-                  }}
-                >
-                  {video.category}
-                </p>
-                <h3
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "var(--white)",
-                    lineHeight: 1.4,
-                    marginBottom: "10px",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical" as const,
-                    overflow: "hidden",
-                  }}
-                >
-                  {video.title}
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    fontSize: "12px",
-                    color: "var(--muted)",
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
+              <div className="video-info">
+                <p className="video-cat">{video.category}</p>
+
+                <h3 className="video-title">{video.title}</h3>
+
+                <div className="video-meta">
+                  <span className="video-author">
                     <span
+                      className="avatar avatar--sm"
+                      style={{ background: video.avatarBg }}
                       aria-hidden="true"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        background: video.avatarBg,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "10px",
-                        fontWeight: 700,
-                        color: "var(--black)",
-                        flexShrink: 0,
-                      }}
                     >
                       {video.avatar}
                     </span>
                     {video.author}
                   </span>
+
                   <span>{video.views}</span>
                 </div>
               </div>
