@@ -86,6 +86,22 @@ export default async function Hero() {
           width: fit-content;
           white-space: nowrap;
         }
+        .hero-feature-card {
+          width: 100%;
+          background: var(--card);
+          border-radius: 16px;
+          overflow: hidden;
+          border: 1px solid var(--border);
+          box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+          text-decoration: none;
+          color: inherit;
+          display: block;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hero-feature-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 60px 100px rgba(0,0,0,0.7);
+        }
         @media (max-width: 900px) {
           .hero-grid { grid-template-columns: 1fr !important; }
           .hero-right { display: none !important; }
@@ -94,13 +110,14 @@ export default async function Hero() {
         }
       `}</style>
 
+      {/* Background glow */}
       <div
         aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.06) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -109,6 +126,8 @@ export default async function Hero() {
 
         {/* Left */}
         <div className="hero-left">
+
+          {/* Badge */}
           <div className="hero-badge">
             <span
               aria-hidden="true"
@@ -120,9 +139,10 @@ export default async function Hero() {
                 flexShrink: 0,
               }}
             />
-            Values-Aligned Streaming
+            Christian Streaming Platform
           </div>
 
+          {/* Headline */}
           <h1
             id="hero-heading"
             style={{
@@ -131,13 +151,14 @@ export default async function Hero() {
               lineHeight: 0.95,
               letterSpacing: "2px",
               color: "var(--white)",
-              marginBottom: "8px",
+              marginBottom: "20px",
             }}
           >
-            STREAM<br />WHAT<br />
-            <span style={{ color: "var(--gold)" }}>MATTERS.</span>
+            FAITH.<br />FILM.<br />
+            <span style={{ color: "var(--gold)" }}>TRUTH.</span>
           </h1>
 
+          {/* Subtitle */}
           <p
             style={{
               fontFamily: "var(--font-serif)",
@@ -145,24 +166,26 @@ export default async function Hero() {
               fontSize: "clamp(18px, 2.5vw, 22px)",
               color: "var(--muted)",
               marginBottom: "20px",
+              lineHeight: 1.5,
             }}
           >
-            Content worth your time. Creators worth following.
+            Faith-filled streaming for viewers, families, churches, and ministries.
           </p>
 
+          {/* Description */}
           <p
             style={{
               fontSize: "16px",
               color: "var(--muted)",
               maxWidth: "460px",
-              lineHeight: 1.75,
+              lineHeight: 1.8,
               marginBottom: "36px",
             }}
           >
-            WorthCast is the open streaming platform for creators and viewers
-            who believe the content you watch shapes the person you become.
+            Sermons, worship, Bible teaching, Christian films, testimonies, and devotionals — curated to the standard your faith deserves.
           </p>
 
+          {/* CTAs */}
           <div className="hero-cta">
             <a
               href="/browse"
@@ -180,7 +203,7 @@ export default async function Hero() {
                 whiteSpace: "nowrap",
               }}
             >
-              Explore WorthCast
+              Start Watching
             </a>
             <a
               href="/join"
@@ -195,25 +218,26 @@ export default async function Hero() {
                 whiteSpace: "nowrap",
               }}
             >
-              Start Free →
+              Join Free →
             </a>
           </div>
 
+          {/* Trust stats */}
           <div
             className="hero-stats"
             aria-label="WorthCast platform highlights"
           >
             {[
-              { num: "Open", label: "To Creators" },
+              { num: "Christian", label: "Content Only" },
               { num: "Free", label: "To Join" },
-              { num: "Global", label: "Audience" },
-              { num: "Fair", label: "Creator Pay" },
+              { num: "Family", label: "Safe & Trusted" },
+              { num: "Global", label: "Ministry Reach" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div
                   style={{
                     fontFamily: "var(--font-display)",
-                    fontSize: "clamp(28px, 3vw, 36px)",
+                    fontSize: "clamp(24px, 3vw, 32px)",
                     color: "var(--gold)",
                     letterSpacing: "1px",
                     lineHeight: 1,
@@ -223,7 +247,7 @@ export default async function Hero() {
                 </div>
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "11px",
                     color: "var(--muted)",
                     textTransform: "uppercase",
                     letterSpacing: "1px",
@@ -237,21 +261,11 @@ export default async function Hero() {
           </div>
         </div>
 
-        {/* Right — real video or placeholder */}
+        {/* Right — featured video */}
         <div aria-hidden="true" className="hero-right">
           <a
             href={video ? `/watch/${video.id}` : "/browse"}
-            style={{
-              width: "100%",
-              background: "var(--card)",
-              borderRadius: "16px",
-              overflow: "hidden",
-              border: "1px solid var(--border)",
-              boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
-              textDecoration: "none",
-              color: "inherit",
-              display: "block",
-            }}
+            className="hero-feature-card"
           >
             {/* Thumbnail */}
             <div
@@ -282,17 +296,19 @@ export default async function Hero() {
                   }}
                 />
               )}
+              {/* Play button */}
               <div
                 style={{
                   width: "72px",
                   height: "72px",
-                  background: "rgba(201,168,76,0.9)",
+                  background: "rgba(201,168,76,0.92)",
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
                   zIndex: 2,
+                  boxShadow: "0 8px 32px rgba(201,168,76,0.4)",
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24"
@@ -300,40 +316,68 @@ export default async function Hero() {
                   <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
               </div>
-            </div>
 
-            {/* Card info */}
-            <div style={{ padding: "20px 24px" }}>
-              <p
+              {/* Live/Now streaming badge */}
+              <div
                 style={{
-                  fontSize: "11px",
+                  position: "absolute",
+                  top: "16px",
+                  left: "16px",
+                  background: "rgba(0,0,0,0.75)",
+                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(201,168,76,0.3)",
+                  borderRadius: "100px",
+                  padding: "4px 12px",
+                  fontSize: "10px",
+                  fontWeight: 700,
                   color: "var(--gold)",
-                  textTransform: "uppercase",
                   letterSpacing: "1.5px",
-                  fontWeight: 600,
-                  marginBottom: "8px",
+                  textTransform: "uppercase",
                 }}
               >
                 ✦ Now Streaming
-              </p>
+              </div>
+            </div>
+
+            {/* Card info */}
+            <div style={{ padding: "20px 24px 24px" }}>
               <p
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "18px",
+                  fontSize: "20px",
                   color: "var(--white)",
                   lineHeight: 1.3,
-                  marginBottom: "8px",
+                  marginBottom: "10px",
+                  fontWeight: 700,
                 }}
               >
-                {video ? video.title : "Values-aligned content for creators and viewers who care."}
+                {video ? video.title : "Christian content for every season of faith."}
               </p>
-              <p style={{
-                fontSize: "13px",
-                color: "var(--gold)",
-                fontWeight: 500,
-              }}>
-                {video ? "Watch now →" : "Browse all videos →"}
-              </p>
+              {video?.description && (
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "var(--muted)",
+                    lineHeight: 1.5,
+                    marginBottom: "12px",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical" as const,
+                    overflow: "hidden",
+                  }}
+                >
+                  {video.description}
+                </p>
+              )}
+              <span
+                style={{
+                  fontSize: "13px",
+                  color: "var(--gold)",
+                  fontWeight: 600,
+                }}
+              >
+                {video ? "Watch now →" : "Browse all content →"}
+              </span>
             </div>
           </a>
         </div>
