@@ -39,118 +39,29 @@ const features = [
 
 export default function WhyWorthCast() {
   return (
-    <section
-      aria-labelledby="why-heading"
-      style={{
-        background: "var(--black)",
-        borderTop: "1px solid var(--border)",
-      }}
-    >
-      <style>{`
-        .why-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-        }
-        .why-card {
-          padding: 48px 40px;
-          border-right: 1px solid var(--border);
-          border-bottom: 1px solid var(--border);
-        }
-        .why-card:nth-child(3n) {
-          border-right: none;
-        }
-        .why-card:nth-child(4),
-        .why-card:nth-child(5),
-        .why-card:nth-child(6) {
-          border-bottom: none;
-        }
-        @media (max-width: 900px) {
-          .why-grid { grid-template-columns: repeat(2, 1fr); }
-          .why-card:nth-child(2n) { border-right: none; }
-          .why-card:nth-child(3n) { border-right: 1px solid var(--border); }
-          .why-card:nth-child(5),
-          .why-card:nth-child(6) { border-bottom: none; }
-          .why-card:nth-child(4) { border-bottom: 1px solid var(--border); }
-        }
-        @media (max-width: 600px) {
-          .why-grid { grid-template-columns: 1fr; }
-          .why-card { border-right: none !important; }
-          .why-card:last-child { border-bottom: none; }
-          .why-card:nth-child(4) { border-bottom: 1px solid var(--border) !important; }
-          .why-card:nth-child(5) { border-bottom: 1px solid var(--border) !important; }
-        }
-      `}</style>
-
-      {/* Header */}
-      <div
-        style={{
-          padding: "80px 80px 60px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <p style={{
-          fontSize: "11px",
-          color: "var(--gold)",
-          textTransform: "uppercase",
-          letterSpacing: "2px",
-          fontWeight: 600,
-          marginBottom: "12px",
-        }}>
-          Our Standard
-        </p>
-        <h2
-          id="why-heading"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(36px, 5vw, 56px)",
-            letterSpacing: "1px",
-            lineHeight: 1,
-            color: "var(--white)",
-            maxWidth: "600px",
-          }}
-        >
-          WHY WORTHCAST
-        </h2>
+    <section className="page-section section-bg-dark" aria-labelledby="why-heading">
+      <div className="section-header">
+        <div>
+          <p className="section-label">Our Standard</p>
+          <h2 id="why-heading" className="section-title">
+            Why WorthCast
+          </h2>
+        </div>
       </div>
 
-      {/* Grid */}
-      <div className="why-grid">
-        {features.map((f) => (
-          <div key={f.title} className="why-card">
-            <span
-              aria-hidden="true"
-              style={{
-                fontSize: "32px",
-                display: "block",
-                marginBottom: "20px",
-              }}
-            >
-              {f.icon}
-            </span>
-            <h3
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "20px",
-                letterSpacing: "0.5px",
-                color: "var(--white)",
-                marginBottom: "12px",
-                lineHeight: 1.2,
-              }}
-            >
-              {f.title}
-            </h3>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--muted)",
-                lineHeight: 1.75,
-              }}
-            >
-              {f.description}
-            </p>
-          </div>
+      <ul className="why-grid" role="list">
+        {features.map((feature) => (
+          <li key={feature.title} className="why-card">
+            <div className="why-icon" aria-hidden="true">
+              {feature.icon}
+            </div>
+
+            <h3 className="why-title">{feature.title}</h3>
+
+            <p className="why-desc">{feature.description}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
