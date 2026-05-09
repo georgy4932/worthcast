@@ -1,10 +1,16 @@
 const categories = [
-  { name: "Faith", icon: "✝️", href: "/categories/faith" },
-  { name: "Film", icon: "🎬", href: "/categories/film" },
-  { name: "Education", icon: "📚", href: "/categories/education" },
-  { name: "Family", icon: "👨‍👩‍👧", href: "/categories/family" },
-  { name: "Culture", icon: "🌍", href: "/categories/culture" },
-  { name: "Wellbeing", icon: "🩺", href: "/categories/wellbeing" },
+  { name: "Sermons", icon: "🎙️", href: "/categories/sermons" },
+  { name: "Worship", icon: "🎵", href: "/categories/worship" },
+  { name: "Bible Teaching", icon: "📖", href: "/categories/bible-teaching" },
+  { name: "Christian Films", icon: "🎬", href: "/categories/films" },
+  { name: "Testimonies", icon: "🕊️", href: "/categories/testimonies" },
+  { name: "Devotionals", icon: "🙏", href: "/categories/devotionals" },
+  { name: "Kids & Family", icon: "👨‍👩‍👧", href: "/categories/kids-family" },
+  { name: "Conferences", icon: "🏛️", href: "/categories/conferences" },
+  { name: "Apologetics", icon: "✝️", href: "/categories/apologetics" },
+  { name: "Prayer", icon: "🕯️", href: "/categories/prayer" },
+  { name: "Ministries", icon: "⛪", href: "/categories/ministries" },
+  { name: "Live Church", icon: "📡", href: "/categories/live" },
 ];
 
 export default function Categories() {
@@ -25,10 +31,10 @@ export default function Categories() {
           gap: 16px;
         }
         @media (max-width: 1000px) {
-          .categories-grid { grid-template-columns: repeat(3, 1fr); }
+          .categories-grid { grid-template-columns: repeat(4, 1fr); }
         }
         @media (max-width: 600px) {
-          .categories-grid { grid-template-columns: repeat(2, 1fr); }
+          .categories-grid { grid-template-columns: repeat(3, 1fr); }
           .categories-section { padding: 60px 24px !important; }
         }
       `}</style>
@@ -42,7 +48,7 @@ export default function Categories() {
           fontWeight: 600,
           marginBottom: "8px",
         }}>
-          Explore
+          Browse by Category
         </p>
         <h2
           id="categories-heading"
@@ -54,7 +60,7 @@ export default function Categories() {
             color: "var(--white)",
           }}
         >
-          Browse by Category
+          What Are You Looking For?
         </h2>
       </div>
 
@@ -68,7 +74,7 @@ export default function Categories() {
                 background: "var(--card)",
                 border: "1px solid var(--border)",
                 borderRadius: "10px",
-                padding: "24px 20px",
+                padding: "20px 16px",
                 textAlign: "center",
                 textDecoration: "none",
                 color: "inherit",
@@ -77,9 +83,9 @@ export default function Categories() {
               <span
                 aria-hidden="true"
                 style={{
-                  fontSize: "28px",
+                  fontSize: "24px",
                   display: "block",
-                  marginBottom: "10px",
+                  marginBottom: "8px",
                   lineHeight: 1,
                 }}
               >
@@ -87,9 +93,10 @@ export default function Categories() {
               </span>
               <span style={{
                 display: "block",
-                fontSize: "13px",
+                fontSize: "12px",
                 fontWeight: 600,
                 color: "var(--white)",
+                lineHeight: 1.3,
               }}>
                 {cat.name}
               </span>
