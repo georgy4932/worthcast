@@ -1815,3 +1815,76 @@ svg {
     font-size: 16px;
   }
 }
+
+/* ---------- Navbar Auth + Mobile Drawer ---------- */
+
+.nav-user-email {
+  max-width: 160px;
+  color: var(--muted);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background: rgba(8, 8, 8, 0.98);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.mobile-drawer-link {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-drawer-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.mobile-drawer-actions .btn {
+  flex: 1;
+}
+
+@media (max-width: 980px) {
+  .nav-search,
+  .site-nav,
+  .btn-upload,
+  .nav-right {
+    display: none;
+  }
+
+  .nav-mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 981px) {
+  .nav-mobile-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .mobile-drawer-actions {
+    flex-direction: column;
+  }
+}
