@@ -1,12 +1,16 @@
 const items = [
-  "Trending Now",
-  "Faith & Spirituality",
-  "Documentary Films",
-  "Family Content",
-  "Health & Wellbeing",
-  "Education",
-  "Arts & Culture",
-  "Live Events",
+  "Sermons",
+  "Worship",
+  "Bible Teaching",
+  "Christian Films",
+  "Testimonies",
+  "Devotionals",
+  "Kids & Family",
+  "Conferences",
+  "Ministries",
+  "Live Church",
+  "Apologetics",
+  "Prayer",
 ];
 
 export default function Ticker() {
@@ -29,7 +33,7 @@ export default function Ticker() {
         .ticker-inner {
           display: flex;
           white-space: nowrap;
-          animation: ticker 28s linear infinite;
+          animation: ticker 32s linear infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .ticker-inner { animation: none; }
@@ -45,7 +49,7 @@ export default function Ticker() {
               gap: "16px",
               padding: "0 40px",
               fontFamily: "var(--font-display)",
-              fontSize: "14px",
+              fontSize: "13px",
               letterSpacing: "2px",
               color: "var(--black)",
             }}
