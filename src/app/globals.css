@@ -1155,6 +1155,12 @@ svg {
   }
 }
 
+/* ---------- Home Page ---------- */
+
+.home-page {
+  background: var(--black);
+}
+
 /* ---------- Live Page ---------- */
 
 .live-page {
