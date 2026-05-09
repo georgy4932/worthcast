@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, DM_Sans, Playfair_Display } from "next/font/google";
+import {
+  Bebas_Neue,
+  DM_Sans,
+  Playfair_Display,
+} from "next/font/google";
+
 import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
-  weight: "400",
   subsets: ["latin"],
+  weight: "400",
   variable: "--font-display",
 });
 
@@ -20,30 +25,63 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "WorthCast — Christian Streaming Platform",
+  metadataBase: new URL("https://worthcast.com"),
+
+  title: {
+    default: "WorthCast",
+    template: "%s • WorthCast",
+  },
+
   description:
-    "WorthCast is the Christian streaming platform for viewers, families, churches, and ministries. Watch sermons, worship, Bible teaching, Christian films, testimonies, and devotionals.",
+    "Christian streaming for viewers, families, churches, and ministries. Watch sermons, worship, Bible teaching, testimonies, devotionals, and Christian films.",
+
+  keywords: [
+    "Christian streaming",
+    "sermons",
+    "Bible teaching",
+    "worship",
+    "Christian films",
+    "devotionals",
+    "WorthCast",
+  ],
+
   openGraph: {
-    title: "WorthCast — Christian Streaming Platform",
+    title: "WorthCast",
     description:
-      "Faith-filled streaming for viewers, families, churches, and ministries. Sermons, worship, Bible teaching, Christian films, and devotionals — curated to the standard your faith deserves.",
+      "Faith-filled streaming for viewers, families, churches, and ministries.",
+    url: "https://worthcast.com",
+    siteName: "WorthCast",
     type: "website",
+    locale: "en_US",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "WorthCast",
+    description:
+      "Christian streaming for viewers, families, churches, and ministries.",
+  },
+
+  icons: {
+    icon: "/favicon.svg",
   },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
-      className={`${bebasNeue.variable} ${dmSans.variable} ${playfairDisplay.variable}`}
+      className={[
+        bebasNeue.variable,
+        dmSans.variable,
+        playfairDisplay.variable,
+      ].join(" ")}
+      suppressHydrationWarning
     >
-      <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
       </body>
