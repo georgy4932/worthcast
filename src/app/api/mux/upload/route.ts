@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
 
+export const maxDuration = 60;
+
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID!,
   tokenSecret: process.env.MUX_TOKEN_SECRET!,
