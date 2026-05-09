@@ -5,26 +5,18 @@ type Props = {
   title?: string;
 };
 
-export default function MuxPlayer({ playbackId, title }: Props) {
+export default function MuxPlayer({
+  playbackId,
+  title,
+}: Props) {
   return (
-    <div
-      style={{
-        width: "100%",
-        aspectRatio: "16/9",
-        background: "#000",
-      }}
-    >
+    <div className="mux-player-shell">
       <iframe
         src={`https://player.mux.com/${playbackId}`}
         title={title}
         allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
         allowFullScreen
-        style={{
-          width: "100%",
-          height: "100%",
-          border: "none",
-          display: "block",
-        }}
+        className="mux-player-frame"
       />
     </div>
   );
