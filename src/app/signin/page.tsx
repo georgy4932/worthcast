@@ -15,12 +15,16 @@ export default function SignInPage() {
     setError(null);
 
     if (mode === "signin") {
-      const { error } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) setError(error.message);
-      else window.location.href = "/";
+      else {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get("redirect") || "/";
+        window.location.href = redirect;
+      }
     } else {
       const { error } = await supabase.auth.signUp({
         email,
