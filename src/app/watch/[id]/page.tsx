@@ -116,7 +116,15 @@ export default async function WatchPage({
           background: "var(--black)",
         }}
       >
+                <style>{`
+          @media (max-width: 768px) {
+            .watch-grid { grid-template-columns: 1fr !important; }
+            .watch-sidebar { display: none !important; }
+            .watch-info { padding: 20px !important; }
+          }
+        `}</style>
         <div
+          className="watch-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 380px",
@@ -170,8 +178,8 @@ export default async function WatchPage({
               </div>
             )}
 
-            {/* Video Info */}
-            <div style={{ padding: "32px 40px" }}>
+                        {/* Video Info */}
+            <div className="watch-info" style={{ padding: "32px 40px" }}>
               <h1
                 style={{
                   fontFamily: "var(--font-serif)",
@@ -226,8 +234,8 @@ export default async function WatchPage({
             </div>
           </div>
 
-          {/* RIGHT — Related Videos */}
-          <div style={{ padding: "24px 20px" }}>
+                    {/* RIGHT — Related Videos */}
+          <div className="watch-sidebar" style={{ padding: "24px 20px" }}>
             <h2
               style={{
                 fontFamily: "var(--font-display)",
