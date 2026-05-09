@@ -24,23 +24,56 @@ export default function VideoCard({
   avatarClass,
 }: VideoCardProps) {
   return (
-    <a href={href} className="video-card">
+    <a
+      href={href}
+      className="video-card"
+    >
       <div className="video-thumb">
-        <div className={`thumb-bg ${theme}`} aria-hidden="true">{emoji}</div>
-        <div className="thumb-overlay" aria-hidden="true">
-          <div className="thumb-play">▶</div>
+
+        <div
+          className={`thumb-bg ${theme}`}
+          aria-hidden="true"
+        >
+          {emoji}
         </div>
-        <span className="thumb-duration">{duration}</span>
+
+        <div
+          className="thumb-overlay"
+          aria-hidden="true"
+        >
+          <div className="thumb-play">
+            ▶
+          </div>
+        </div>
+
+        <span className="thumb-duration">
+          {duration}
+        </span>
       </div>
 
       <div className="video-info">
-        <p className="video-cat">{category}</p>
-        <h3 className="video-title">{title}</h3>
+
+        <p className="video-cat">
+          {category}
+        </p>
+
+        <h3 className="video-title">
+          {title}
+        </h3>
+
         <div className="video-meta">
+
           <span className="video-author">
-            <span className={`avatar avatar--sm ${avatarClass}`} aria-hidden="true">{avatar}</span>
+            <span
+              className={`avatar avatar--sm ${avatarClass}`}
+              aria-hidden="true"
+            >
+              {avatar}
+            </span>
+
             {author}
           </span>
+
           <span>{views}</span>
         </div>
       </div>
