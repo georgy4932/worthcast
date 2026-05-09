@@ -35,6 +35,7 @@ export default function UploadPage() {
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
+
     if (!selected) return;
 
     if (!selected.type.startsWith("video/")) {
@@ -58,27 +59,25 @@ export default function UploadPage() {
     }
 
     setStatus("requesting");
-    setError(null);
     setProgress(0);
+    setError(null);
 
     try {
       const res = await fetch("/api/mux/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim() || null,
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to create upload URL.");
-      }
+      const data = await res.json();
 
-      const { uploadUrl } = await res.json();
-
-      if (!uploadUrl) {
-        throw new Error("No upload URL returned.");
+      if (!res.ok || !data.uploadUrl) {
+        throw new Error(data.error || "Failed to create upload URL.");
       }
 
       setStatus("uploading");
@@ -86,27 +85,34 @@ export default function UploadPage() {
       await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
-        xhr.upload.addEventListener("progress", (e) => {
-          if (e.lengthComputable) {
-            setProgress(Math.round((e.loaded / e.total) * 100));
+        xhr.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable) {
+            setProgress(Math.round((event.loaded / event.total) * 100));
           }
         });
 
         xhr.addEventListener("load", () => {
-          if (xhr.status >= 200 && xhr.status < 300) resolve();
-          else reject(new Error("Upload failed."));
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error("Upload failed."));
+          }
         });
 
         xhr.addEventListener("error", () => {
           reject(new Error("Upload failed."));
         });
 
-        xhr.open("PUT", uploadUrl);
+        xhr.open("PUT", data.uploadUrl);
         xhr.send(file);
       });
 
       setProgress(100);
       setStatus("processing");
+
+      setTimeout(() => {
+        setStatus("done");
+      }, 2000);
     } catch (err) {
       console.error("Upload error:", err);
       setError("Upload failed. Please try again.");
@@ -137,7 +143,7 @@ export default function UploadPage() {
                 Your video is being processed by Mux. It will appear once the
                 webhook saves it to WorthCast.
               </p>
-              <button className="btn btn-primary" onClick={resetForm}>
+              <button type="button" className="btn btn-primary" onClick={resetForm}>
                 Upload Another
               </button>
             </div>
@@ -163,7 +169,9 @@ export default function UploadPage() {
                   <>
                     <div className="upload-drop-icon">🎬</div>
                     <p className="upload-drop-title">Select your video file</p>
-                    <p className="upload-drop-copy">MP4, MOV, MKV — up to 10GB</p>
+                    <p className="upload-drop-copy">
+                      MP4, MOV, MKV — up to 10GB
+                    </p>
 
                     <label htmlFor="video-file" className="btn btn-primary">
                       Browse Files
@@ -221,8 +229,7 @@ export default function UploadPage() {
 
               {status === "processing" && (
                 <p className="upload-message success">
-                  ✓ Upload complete — Mux is processing your video. It will show
-                  on WorthCast after the webhook finishes.
+                  ✓ Upload complete — Mux is processing your video.
                 </p>
               )}
 
