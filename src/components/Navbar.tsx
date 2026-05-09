@@ -1,9 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import type { User } from "@supabase/supabase-js";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
 
   return (
     <>
@@ -68,7 +90,7 @@ export default function Navbar() {
           </span>
         </a>
 
-        {/* Search — hidden on mobile */}
+        {/* Search */}
         <div
           className="nav-search-wrap"
           style={{
@@ -128,14 +150,12 @@ export default function Navbar() {
 
         {/* Desktop nav links */}
         <nav aria-label="Primary navigation" className="nav-links-wrap">
-          <ul
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "28px",
-              listStyle: "none",
-            }}
-          >
+          <ul style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "28px",
+            listStyle: "none",
+          }}>
             {[
               { label: "Browse", href: "/browse" },
               { label: "Live", href: "/live" },
@@ -194,35 +214,69 @@ export default function Navbar() {
             </svg>
             Upload
           </a>
-          <a
-            href="/signin"
-            style={{
-              background: "transparent",
-              color: "var(--white)",
-              border: "1px solid var(--border)",
-              padding: "7px 16px",
-              borderRadius: "6px",
-              fontSize: "13px",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            Sign In
-          </a>
-          <a
-            href="/join"
-            style={{
-              background: "var(--gold)",
-              color: "var(--black)",
-              padding: "7px 16px",
-              borderRadius: "6px",
-              fontSize: "13px",
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            Start Free
-          </a>
+
+          {user ? (
+            <>
+              <span style={{
+                fontSize: "13px",
+                color: "var(--muted)",
+                maxWidth: "160px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}>
+                {user.email}
+              </span>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  background: "transparent",
+                  color: "var(--white)",
+                  border: "1px solid var(--border)",
+                  padding: "7px 16px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-body)",
+                  cursor: "pointer",
+                }}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <a
+                href="/signin"
+                style={{
+                  background: "transparent",
+                  color: "var(--white)",
+                  border: "1px solid var(--border)",
+                  padding: "7px 16px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                Sign In
+              </a>
+              <a
+                href="/join"
+                style={{
+                  background: "var(--gold)",
+                  color: "var(--black)",
+                  padding: "7px 16px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Start Free
+              </a>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -289,39 +343,62 @@ export default function Navbar() {
             </a>
           ))}
           <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
-            <a
-              href="/signin"
-              style={{
-                flex: 1,
-                textAlign: "center",
-                background: "transparent",
-                color: "var(--white)",
-                border: "1px solid var(--border)",
-                padding: "12px",
-                borderRadius: "6px",
-                fontSize: "15px",
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              Sign In
-            </a>
-            <a
-              href="/join"
-              style={{
-                flex: 1,
-                textAlign: "center",
-                background: "var(--gold)",
-                color: "var(--black)",
-                padding: "12px",
-                borderRadius: "6px",
-                fontSize: "15px",
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
-            >
-              Start Free
-            </a>
+            {user ? (
+              <button
+                onClick={handleSignOut}
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                  background: "transparent",
+                  color: "var(--white)",
+                  border: "1px solid var(--border)",
+                  padding: "12px",
+                  borderRadius: "6px",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-body)",
+                  cursor: "pointer",
+                }}
+              >
+                Sign Out
+              </button>
+            ) : (
+              <>
+                <a
+                  href="/signin"
+                  style={{
+                    flex: 1,
+                    textAlign: "center",
+                    background: "transparent",
+                    color: "var(--white)",
+                    border: "1px solid var(--border)",
+                    padding: "12px",
+                    borderRadius: "6px",
+                    fontSize: "15px",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  Sign In
+                </a>
+                <a
+                  href="/join"
+                  style={{
+                    flex: 1,
+                    textAlign: "center",
+                    background: "var(--gold)",
+                    color: "var(--black)",
+                    padding: "12px",
+                    borderRadius: "6px",
+                    fontSize: "15px",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                  }}
+                >
+                  Start Free
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}
