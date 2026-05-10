@@ -3,6 +3,7 @@ import MuxPlayer from "@/components/MuxPlayer";
 import VideoCard from "@/components/VideoCard";
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
+import ViewTracker from "@/components/ViewTracker";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
