@@ -1,9 +1,9 @@
 import Navbar from "@/components/Navbar";
 import MuxPlayer from "@/components/MuxPlayer";
 import VideoCard from "@/components/VideoCard";
+import ViewTracker from "@/components/ViewTracker";
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
-import ViewTracker from "@/components/ViewTracker";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +30,7 @@ async function getVideo(id: string): Promise<Video | null> {
   return data;
 }
 
-async function getRelatedVideos(currentId: string) {
+async function getRelatedVideos(currentId: string): Promise<Video[]> {
   const { data } = await supabase
     .from("videos")
     .select("*")
@@ -72,7 +72,6 @@ export default async function WatchPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
   const video = await getVideo(id);
 
   if (!video) {
@@ -80,17 +79,13 @@ export default async function WatchPage({
   }
 
   const relatedVideos = await getRelatedVideos(video.id);
-
   const duration = formatDuration(video.duration);
 
-  const publishedAt = new Date(video.created_at).toLocaleDateString(
-    "en-US",
-    {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }
-  );
+  const publishedAt = new Date(video.created_at).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <>
@@ -104,6 +99,8 @@ export default async function WatchPage({
           paddingBottom: "80px",
         }}
       >
+        <ViewTracker videoId={video.id} />
+
         <div
           style={{
             maxWidth: "1400px",
@@ -114,7 +111,6 @@ export default async function WatchPage({
             gap: "32px",
           }}
         >
-          {/* Main */}
           <section>
             {video.mux_playback_id ? (
               <MuxPlayer
@@ -190,7 +186,6 @@ export default async function WatchPage({
             </div>
           </section>
 
-          {/* Sidebar */}
           <aside>
             <h2
               style={{
