@@ -1,9 +1,11 @@
 import Navbar from "@/components/Navbar";
 import MuxPlayer from "@/components/MuxPlayer";
-import VideoCard from "@/components/VideoCard";
 import ViewTracker from "@/components/ViewTracker";
+import WatchActions from "@/components/WatchActions";
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,6 +27,8 @@ async function getVideo(id: string): Promise<Video | null> {
     .from("videos")
     .select("*")
     .eq("id", id)
+    .eq("status", "ready")
+    .eq("visibility", "public")
     .maybeSingle();
 
   return data;
@@ -38,7 +42,7 @@ async function getRelatedVideos(currentId: string): Promise<Video[]> {
     .eq("visibility", "public")
     .neq("id", currentId)
     .order("created_at", { ascending: false })
-    .limit(4);
+    .limit(6);
 
   return data || [];
 }
@@ -46,23 +50,16 @@ async function getRelatedVideos(currentId: string): Promise<Video[]> {
 function formatDuration(seconds: number | null) {
   if (!seconds) return "0:00";
 
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
 
-  return `${m}:${s.toString().padStart(2, "0")}`;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
 function formatViews(count: number | null) {
   if (!count) return "0 views";
-
-  if (count >= 1_000_000) {
-    return `${(count / 1_000_000).toFixed(1)}M views`;
-  }
-
-  if (count >= 1_000) {
-    return `${(count / 1_000).toFixed(0)}K views`;
-  }
-
+  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M views`;
+  if (count >= 1_000) return `${(count / 1_000).toFixed(0)}K views`;
   return `${count} views`;
 }
 
@@ -87,152 +84,115 @@ export default async function WatchPage({
     year: "numeric",
   });
 
+  const shareUrl = `https://worthcast.vercel.app/watch/${video.id}`;
+
   return (
     <>
       <Navbar />
 
-      <main
-        style={{
-          background: "var(--black)",
-          minHeight: "100vh",
-          paddingTop: "100px",
-          paddingBottom: "80px",
-        }}
-      >
+      <main className="watch-page">
         <ViewTracker videoId={video.id} />
 
-        <div
-          style={{
-            maxWidth: "1400px",
-            margin: "0 auto",
-            padding: "0 24px",
-            display: "grid",
-            gridTemplateColumns: "minmax(0,1fr) 360px",
-            gap: "32px",
-          }}
-        >
-          <section>
+        <div className="watch-layout">
+          <section className="watch-main">
             {video.mux_playback_id ? (
-              <MuxPlayer
-                playbackId={video.mux_playback_id}
-                title={video.title}
-              />
+              <MuxPlayer playbackId={video.mux_playback_id} title={video.title} />
             ) : (
-              <div
-                style={{
-                  aspectRatio: "16 / 9",
-                  borderRadius: "16px",
-                  background: "var(--card)",
-                  border: "1px solid var(--border)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--muted)",
-                }}
-              >
+              <div className="watch-player-placeholder">
                 Video unavailable
               </div>
             )}
 
-            <div
-              style={{
-                marginTop: "28px",
-                borderBottom: "1px solid var(--border)",
-                paddingBottom: "28px",
-              }}
-            >
-              <h1
-                style={{
-                  fontSize: "34px",
-                  lineHeight: 1.15,
-                  color: "var(--white)",
-                  marginBottom: "16px",
-                  fontWeight: 700,
-                }}
-              >
-                {video.title}
-              </h1>
+            <div className="watch-info">
+              <h1>{video.title}</h1>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  flexWrap: "wrap",
-                  color: "var(--muted)",
-                  fontSize: "14px",
-                  marginBottom: "24px",
-                }}
-              >
-                <span>{formatViews(video.view_count)}</span>
-                <span>•</span>
-                <span>{publishedAt}</span>
-                <span>•</span>
-                <span>{duration}</span>
+              <div className="watch-top-row">
+                <div className="watch-meta">
+                  <span>{formatViews(video.view_count)}</span>
+                  <span>•</span>
+                  <span>{publishedAt}</span>
+                  <span>•</span>
+                  <span>{duration}</span>
+                </div>
+
+                <WatchActions title={video.title} shareUrl={shareUrl} />
               </div>
 
-              {video.description && (
-                <p
-                  style={{
-                    color: "var(--muted)",
-                    lineHeight: 1.8,
-                    fontSize: "15px",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {video.description}
+              <div className="watch-creator-card">
+                <div className="watch-creator-left">
+                  <div className="watch-avatar">W</div>
+                  <div>
+                    <p className="watch-creator-name">WorthCast Creator</p>
+                    <p className="watch-creator-subtitle">
+                      Christian content creator
+                    </p>
+                  </div>
+                </div>
+
+                <button type="button" className="btn btn-primary btn-sm">
+                  + Follow
+                </button>
+              </div>
+
+              <div className="watch-description-card">
+                <p className="watch-description">
+                  {video.description || "No description provided."}
                 </p>
-              )}
+              </div>
+
+              <div className="watch-standard-card">
+                <p>✝️ Christian Content</p>
+                <span>
+                  This video is part of WorthCast’s Christian-first streaming
+                  library.
+                </span>
+              </div>
             </div>
           </section>
 
-          <aside>
-            <h2
-              style={{
-                color: "var(--white)",
-                fontSize: "18px",
-                marginBottom: "20px",
-              }}
-            >
-              Up Next
-            </h2>
+          <aside className="watch-sidebar">
+            <h2>Up Next</h2>
 
-            <div
-              style={{
-                display: "grid",
-                gap: "16px",
-              }}
-            >
-              {relatedVideos.map((related, index) => {
-                const thumbnailUrl = related.mux_playback_id
-                  ? `https://image.mux.com/${related.mux_playback_id}/thumbnail.jpg?time=0`
-                  : null;
+            {relatedVideos.length === 0 ? (
+              <p className="watch-sidebar-empty">
+                No other videos yet. Upload more content to build the library.
+              </p>
+            ) : (
+              <div className="watch-related-list">
+                {relatedVideos.map((related) => {
+                  const thumbnailUrl = related.mux_playback_id
+                    ? `https://image.mux.com/${related.mux_playback_id}/thumbnail.jpg?time=0`
+                    : null;
 
-                return (
-                  <VideoCard
-                    key={related.id}
-                    href={`/watch/${related.id}`}
-                    title={related.title}
-                    category="WorthCast"
-                    author="WorthCast Creator"
-                    views={formatViews(related.view_count)}
-                    duration={formatDuration(related.duration)}
-                    emoji="🎬"
-                    theme={
-                      [
-                        "thumb-faith",
-                        "thumb-documentary",
-                        "thumb-education",
-                        "thumb-wellbeing",
-                      ][index % 4]
-                    }
-                    avatar="W"
-                    avatarClass="avatar--gold"
-                    thumbnailUrl={thumbnailUrl}
-                  />
-                );
-              })}
-            </div>
+                  return (
+                    <a
+                      key={related.id}
+                      href={`/watch/${related.id}`}
+                      className="watch-related-card"
+                    >
+                      <div
+                        className="watch-related-thumb"
+                        style={{
+                          background: thumbnailUrl
+                            ? `url(${thumbnailUrl}) center/cover no-repeat`
+                            : "linear-gradient(135deg,#1a1a2e,#2d1b4e)",
+                        }}
+                      >
+                        {!thumbnailUrl && "🎬"}
+
+                        <span>{formatDuration(related.duration)}</span>
+                      </div>
+
+                      <div className="watch-related-info">
+                        <h3>{related.title}</h3>
+                        <p>WorthCast Creator</p>
+                        <p>{formatViews(related.view_count)}</p>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </aside>
         </div>
       </main>
