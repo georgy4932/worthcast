@@ -2836,6 +2836,56 @@ svg {
   }
 }
 
+.watch-layout {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.watch-main {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.015),
+      transparent 220px
+    );
+}
+
+.watch-sidebar {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--nav-h) + 12px);
+}
+
+.watch-info h1 {
+  margin-bottom: 10px;
+}
+
+.watch-action-btn {
+  padding: 7px 15px;
+  backdrop-filter: blur(10px);
+}
+
+.watch-related-card {
+  transition:
+    background .18s ease,
+    transform .18s ease;
+}
+
+.watch-related-card:hover {
+  transform: translateY(-2px);
+}
+
+.watch-related-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.5),
+      transparent 50%
+    );
+}
+
 /* ---------- Not Found Page ---------- */
 
 .not-found-page {
