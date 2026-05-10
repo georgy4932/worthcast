@@ -124,7 +124,7 @@ export default async function WatchPage({
                   <div>
                     <p className="watch-creator-name">WorthCast Creator</p>
                     <p className="watch-creator-subtitle">
-                      Christian content creator
+                      Faith & Biblical Storytelling
                     </p>
                   </div>
                 </div>
