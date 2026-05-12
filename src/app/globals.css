@@ -4472,3 +4472,134 @@ svg {
     padding: 40px 0 52px;
   }
 }
+
+/* ---------- Studio Page ---------- */
+
+.studio-page {
+  min-height: 100vh;
+  background: var(--black);
+  padding-top: 68px;
+}
+
+.studio-hero {
+  padding: 88px 0 72px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(201,168,76,.08),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.015),
+      transparent
+    );
+}
+
+.studio-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: .95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 22px;
+}
+
+.studio-title span {
+  color: var(--gold);
+}
+
+.studio-copy {
+  max-width: 620px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.85;
+  margin-bottom: 40px;
+}
+
+.studio-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.studio-features-section {
+  padding: 72px 0;
+}
+
+.studio-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.studio-feature-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+}
+
+.studio-feature-icon {
+  display: block;
+  font-size: 34px;
+  margin-bottom: 18px;
+}
+
+.studio-feature-card h2 {
+  color: var(--white);
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.studio-feature-card p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.studio-coming-section {
+  padding-bottom: 80px;
+}
+
+.studio-coming-card {
+  background: linear-gradient(
+    135deg,
+    rgba(201,168,76,.08),
+    rgba(255,255,255,.02)
+  );
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 18px;
+  padding: 48px;
+}
+
+.studio-coming-card h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 48px);
+  letter-spacing: 1px;
+  color: var(--white);
+  margin: 14px 0 18px;
+}
+
+.studio-coming-card p:last-child {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+@media (max-width: 900px) {
+  .studio-features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-hero {
+    padding: 64px 0 56px;
+  }
+
+  .studio-coming-card {
+    padding: 36px 28px;
+  }
+}
