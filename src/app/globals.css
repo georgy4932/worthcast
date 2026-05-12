@@ -4780,3 +4780,369 @@ svg {
     padding: 32px 24px;
   }
 }
+
+/* ---------- Monetization Page ---------- */
+
+.monetization-page {
+  min-height: 100vh;
+  background: var(--black);
+  padding-top: 68px;
+}
+
+.monetization-hero {
+  padding: 88px 0 72px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(201,168,76,.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.015),
+      transparent
+    );
+}
+
+.monetization-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: .95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 22px;
+}
+
+.monetization-title span {
+  color: var(--gold);
+}
+
+.monetization-copy {
+  max-width: 700px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.monetization-section {
+  padding: 72px 0;
+}
+
+.monetization-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.monetization-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.monetization-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,.25);
+}
+
+.monetization-icon {
+  font-size: 34px;
+  display: block;
+  margin-bottom: 18px;
+}
+
+.monetization-card h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 14px;
+  letter-spacing: .5px;
+}
+
+.monetization-card p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.monetization-cta-section {
+  padding-bottom: 88px;
+}
+
+.monetization-cta {
+  text-align: center;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(201,168,76,.08),
+      rgba(255,255,255,.02)
+    );
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 20px;
+  padding: 60px 32px;
+}
+
+.monetization-cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin: 14px auto 18px;
+  max-width: 700px;
+}
+
+.monetization-cta p:last-of-type {
+  max-width: 700px;
+  margin: 0 auto 34px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.monetization-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1000px) {
+  .monetization-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .monetization-hero {
+    padding: 64px 0 56px;
+  }
+
+  .monetization-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .monetization-card {
+    padding: 28px 24px;
+  }
+
+  .monetization-cta {
+    padding: 48px 24px;
+  }
+}
+
+/* ---------- Verify Page ---------- */
+
+.verify-page {
+  min-height: 100vh;
+  background: var(--black);
+  padding-top: 68px;
+}
+
+.verify-hero {
+  padding: 88px 0 72px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(201,168,76,.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.015),
+      transparent
+    );
+}
+
+.verify-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: .95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 22px;
+}
+
+.verify-title span {
+  color: var(--gold);
+}
+
+.verify-copy {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.verify-section {
+  padding: 72px 0;
+}
+
+.verify-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.verify-benefit-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  text-align: center;
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.verify-benefit-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,.25);
+}
+
+.verify-benefit-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.verify-benefit-card h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.verify-benefit-card p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.verify-steps-section {
+  padding-top: 0;
+}
+
+.verify-steps-header {
+  margin-bottom: 36px;
+}
+
+.verify-steps-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 54px);
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.verify-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.verify-step-card {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+.verify-step-number {
+  font-family: var(--font-display);
+  font-size: 42px;
+  line-height: 1;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.verify-step-card h3 {
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.verify-step-card p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.verify-cta-section {
+  padding-bottom: 88px;
+}
+
+.verify-cta {
+  text-align: center;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(201,168,76,.08),
+      rgba(255,255,255,.02)
+    );
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 20px;
+  padding: 60px 32px;
+}
+
+.verify-cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin: 14px auto 18px;
+  max-width: 720px;
+}
+
+.verify-cta p:last-of-type {
+  max-width: 700px;
+  margin: 0 auto 34px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+@media (max-width: 1000px) {
+  .verify-benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .verify-hero {
+    padding: 64px 0 56px;
+  }
+
+  .verify-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .verify-step-card {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .verify-step-number {
+    font-size: 36px;
+  }
+
+  .verify-cta {
+    padding: 48px 24px;
+  }
+}
